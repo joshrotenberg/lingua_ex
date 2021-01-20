@@ -3,5 +3,5 @@ defmodule Lingua.Nif do
 
   use Rustler, otp_app: :lingua, crate: "lingua_nif"
 
-  def add(_a, _b), do: :erlang.nif_error(:nif_not_loaded)
+  def detect_language_of(_text, _builder_option, _languages, _minimum_relative_distance), do: :erlang.nif_error(:nif_not_loaded)
 end
