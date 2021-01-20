@@ -1,0 +1,99 @@
+rustler_atoms! {
+    atom ok;
+    atom error;
+    //atom __true__ = "true";
+    //atom __false__ = "false";
+
+    // languages
+    atom afrikaans;
+    atom albanian;
+    atom arabic;
+    atom armenian;
+    atom azerbaijani;
+    atom basque;
+    atom belarusian;
+    atom bengali;
+    atom bokmal;
+    atom bosnian;
+    atom bulgarian;
+    atom catalan;
+    atom chinese;
+    atom croatian;
+    atom czech;
+    atom danish;
+    atom dutch;
+    atom english;
+    atom esperanto;
+    atom estonian;
+    atom finnish;
+    atom french;
+    atom ganda;
+    atom georgian;
+    atom german;
+    atom greek;
+    atom gujarati;
+    atom hebrew;
+    atom hindi;
+    atom hungarian;
+    atom icelandic;
+    atom indonesian;
+    atom irish;
+    atom italian;
+    atom japanese;
+    atom kazakh;
+    atom korean;
+    atom latin;
+    atom latvian;
+    atom lithuanian;
+    atom macedonian;
+    atom malay;
+    atom marathi;
+    atom mongolian;
+    atom nynorsk;
+    atom persian;
+    atom polish;
+    atom portuguese;
+    atom punjabi;
+    atom romanian;
+    atom russian;
+    atom serbian;
+    atom shona;
+    atom slovak;
+    atom slovene;
+    atom somali;
+    atom sotho;
+    atom spanish;
+    atom swahili;
+    atom swedish;
+    atom tagalog;
+    atom tamil;
+    atom telugu;
+    atom thai;
+    atom tsonga;
+    atom tswana;
+    atom turkish;
+    atom ukrainian;
+    atom urdu;
+    atom vietnamese;
+    atom welsh;
+    atom xhosa;
+    atom yoruba;
+    atom zulu;
+
+    // builder options
+    atom all_languages;
+    atom all_spoken_languages;
+    atom all_languages_with_arabic_script;
+    atom all_languages_with_cyrillic_script;
+    atom all_languages_with_devanagari_script;
+    atom all_languages_with_latin_script;
+
+    atom with_languages;
+    atom without_languages;
+
+    // errors
+    atom no_match;
+    atom unrecognized_builder_option;
+    atom unrecognized_language;
+    atom out_of_range_minimum_relative_distance;
+}
