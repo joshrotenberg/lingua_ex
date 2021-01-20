@@ -1,6 +1,5 @@
 use crate::atoms;
 use rustler::{Decoder, Error, NifResult, Term};
-use std::fmt;
 
 #[derive(PartialEq, Eq, Debug)]
 pub enum BuilderOption {
