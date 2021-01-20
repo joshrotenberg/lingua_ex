@@ -2,9 +2,9 @@
 extern crate rustler;
 
 use builder::BuilderOption;
-use std::ops::Deref;
 use lingua::{Language, LanguageDetector, LanguageDetectorBuilder};
-use rustler::{Atom,  Encoder, Env,  NifResult, SchedulerFlags, Term};
+use rustler::{Atom, Encoder, Env, NifResult, SchedulerFlags, Term};
+use std::ops::Deref;
 
 mod atoms;
 mod builder;
@@ -14,7 +14,6 @@ mod language;
 struct ArgumentError {
     error: Atom,
 }
-
 
 rustler::rustler_export_nifs! {
     "Elixir.Lingua.Nif",

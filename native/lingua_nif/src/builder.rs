@@ -37,4 +37,3 @@ impl<'a> Decoder<'a> for BuilderOption {
         }
     }
 }
-
