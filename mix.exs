@@ -5,7 +5,7 @@ defmodule Lingua.MixProject do
     [
       app: :lingua,
       version: "0.1.0",
-      elixir: "~> 1.11",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
@@ -50,6 +50,8 @@ defmodule Lingua.MixProject do
     [
       {:rustler, "~> 0.21.1"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 end

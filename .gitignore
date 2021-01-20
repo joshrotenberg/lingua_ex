@@ -32,4 +32,5 @@ target
 
 .DS_Store
 
-/priv/native/
+priv/
+native/*/target/
