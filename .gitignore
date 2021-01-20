@@ -27,3 +27,9 @@ lingua_ex-*.tar
 /tmp
 
 target
+
+/.vscode/
+
+.DS_Store
+
+/priv/native/
