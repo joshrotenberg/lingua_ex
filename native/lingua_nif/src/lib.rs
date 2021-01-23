@@ -3,7 +3,7 @@ extern crate rustler;
 
 use builder::BuilderOption;
 use lingua::{Language, LanguageDetector, LanguageDetectorBuilder};
-use rustler::{Decoder, Encoder, Env, NifResult, SchedulerFlags, Term};
+use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
 use std::ops::Deref;
 
 mod atoms;
