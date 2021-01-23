@@ -36,8 +36,7 @@ iex> Lingua.detect("what in the world is this", builder_option: :with_languages,
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `lingua_ex` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `lingua` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -49,7 +48,7 @@ end
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/lingua_ex](https://hexdocs.pm/lingua_ex).
+be found at [https://hexdocs.pm/lingua](https://hexdocs.pm/lingua).
 
 
 [0]: https://elixir-lang.org
