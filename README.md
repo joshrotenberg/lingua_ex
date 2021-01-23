@@ -8,8 +8,31 @@
 
 Lingua is an [Elixir][0] wrapper for the [Rust][1] [lingua][2] crate with [Rustler][3].
 
+## Summary
 
-**TODO: Add description**
+Lingua is a NIF-based bridge for the [lingua][2] [Rust][1] language detection library.
+
+## Usage
+
+```
+iex> Lingua.detect("this is definitely English")
+{:ok, :english}
+
+iex> Lingua.detect("וזה בעברית")
+{:ok, :hebrew}
+
+iex> Lingua.detect("państwowych", builder_option: :with_languages, languages: [:english, :russian, :polish])
+{:ok, :polish}
+
+iex> Lingua.detect("ѕидови", builder_option: :all_languages_with_cyrillic_script)
+{:ok, :macedonian}
+
+iex> Lingua.detect("כלב", builder_option: :with_languages, languages: [:english, :russian, :polish])
+{:ok, :no_match}
+
+iex> Lingua.detect("what in the world is this", builder_option: :with_languages, languages: [:english, :russian, :hebrew], compute_language_confidence_values: true)
+{:ok, [english: 1.0]}
+```
 
 ## Installation
 
