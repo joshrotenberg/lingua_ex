@@ -44,8 +44,8 @@ defmodule Lingua.MixProject do
   defp rustc_mode(:prod), do: :release
   defp rustc_mode(:bench), do: :release
   defp rustc_mode(_), do: :debug
+  # defp rustc_mode(_), do: :release
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:rustler, "~> 0.21.1"},
