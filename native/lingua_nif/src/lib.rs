@@ -3,7 +3,7 @@ extern crate rustler;
 
 use builder::BuilderOption;
 use lingua::{Language, LanguageDetector, LanguageDetectorBuilder};
-use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
+use rustler::{Decoder, Encoder, Env, NifResult, SchedulerFlags, Term};
 use std::ops::Deref;
 
 mod atoms;
@@ -30,13 +30,7 @@ fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>
     let text: String = args[0].decode()?;
 
     let opt: BuilderOption = args[1].decode()?;
-
-    let language_list: Vec<language::Language> = args[2].decode()?;
-    let languages: Vec<lingua::Language> = language_list
-        .into_iter()
-        .map(|x| x.deref().clone())
-        .collect();
-
+    let languages = decode_languages(env, args[2])?;
     let mut builder = create_builder(opt, languages);
     let minimum_relative_distance: f64 = args[3].decode()?;
 
@@ -55,13 +49,7 @@ fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> Ni
     let text: String = args[0].decode()?;
 
     let opt: BuilderOption = args[1].decode()?;
-
-    let language_list: Vec<language::Language> = args[2].decode()?;
-    let languages: Vec<lingua::Language> = language_list
-        .into_iter()
-        .map(|x| x.deref().clone())
-        .collect();
-
+    let languages = decode_languages(env, args[2])?;
     let mut builder = create_builder(opt, languages);
     let minimum_relative_distance: f64 = args[3].decode()?;
 
@@ -69,13 +57,24 @@ fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> Ni
     let detector: LanguageDetector = builder.build();
 
     let confidence_values: Vec<(Language, f64)> = detector.compute_language_confidence_values(text);
-
     let result: Vec<(language::Language, f64)> = confidence_values
         .into_iter()
         .map(|(language, value)| (language::Language(language.clone()), value))
         .collect();
 
-    Ok((atoms::ok(), result).encode(env))
+    match result.len() {
+        0 => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+        _ => Ok((atoms::ok(), result).encode(env)),
+    }
+}
+
+fn decode_languages<'a>(_env: Env<'a>, arg: Term<'a>) -> NifResult<Vec<lingua::Language>> {
+    let language_list: Vec<language::Language> = arg.decode()?;
+    let languages: Vec<lingua::Language> = language_list
+        .into_iter()
+        .map(|x| x.deref().clone())
+        .collect();
+    Ok(languages)
 }
 
 fn create_builder(option: BuilderOption, languages: Vec<Language>) -> LanguageDetectorBuilder {
