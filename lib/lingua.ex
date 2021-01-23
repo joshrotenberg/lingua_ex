@@ -1,4 +1,5 @@
 defmodule Lingua do
+  @moduletag timeout: :infinity
   @moduledoc """
   Lingua wraps [Peter M. Stahl](https://github.com/pemistahl)'s [linuga-rs](https://github.com/pemistahl/lingua-rs) language detection library.
   This wrapper follows the lingua-rs API closely, so consult the [documentation](https://docs.rs/lingua/1.0.3/lingua/index.html) for more information.
