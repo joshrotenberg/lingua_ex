@@ -90,6 +90,8 @@ impl<'a> Decoder<'a> for Language {
             Ok(Language(lingua::Language::Macedonian))
         } else if atoms::malay() == term {
             Ok(Language(lingua::Language::Malay))
+        } else if atoms::maori() == term {
+            Ok(Language(lingua::Language::Maori))
         } else if atoms::marathi() == term {
             Ok(Language(lingua::Language::Marathi))
         } else if atoms::mongolian() == term {
@@ -205,6 +207,7 @@ impl Encoder for Language {
             Language(lingua::Language::Lithuanian) => atoms::lithuanian().encode(env),
             Language(lingua::Language::Macedonian) => atoms::macedonian().encode(env),
             Language(lingua::Language::Malay) => atoms::malay().encode(env),
+            Language(lingua::Language::Maori) => atoms::maori().encode(env),
             Language(lingua::Language::Marathi) => atoms::marathi().encode(env),
             Language(lingua::Language::Mongolian) => atoms::mongolian().encode(env),
             Language(lingua::Language::Nynorsk) => atoms::nynorsk().encode(env),

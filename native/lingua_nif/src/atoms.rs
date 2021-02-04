@@ -47,6 +47,7 @@ rustler_atoms! {
     atom lithuanian;
     atom macedonian;
     atom malay;
+    atom maori;
     atom marathi;
     atom mongolian;
     atom nynorsk;
