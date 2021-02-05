@@ -81,6 +81,88 @@ rustler_atoms! {
     atom yoruba;
     atom zulu;
 
+    // iso code 639_1
+    atom af;
+    atom sq;
+    atom ar;
+    atom hy;
+    atom az;
+    atom eu;
+    atom be;
+    atom bn;
+    atom nb;
+    atom bs;
+    atom bg;
+    atom ca;
+    atom zh;
+    atom hr;
+    atom cs;
+    atom da;
+    atom nl;
+    atom en;
+    atom eo;
+    atom et;
+    atom fi;
+    atom fr;
+    atom lg;
+    atom ka;
+    atom de;
+    atom el;
+    atom gu;
+    atom he;
+    atom hi;
+    atom hu;
+    atom is;
+    atom id;
+    atom ga;
+    atom it;
+    atom ja;
+    atom kk;
+    atom ko;
+    atom la;
+    atom lv;
+    atom lt;
+    atom mk;
+    atom ms;
+    atom mi;
+    atom mr;
+    atom mn;
+    atom nn;
+    atom fa;
+    atom pl;
+    atom pt;
+    atom pa;
+    atom ro;
+    atom ru;
+    atom sr;
+    atom sn;
+    atom sk;
+    atom sl;
+    atom so;
+    atom st;
+    atom es;
+    atom sw;
+    atom sv;
+    atom tl;
+    atom ta;
+    atom te;
+    atom th;
+    atom ts;
+    atom tn;
+    atom tr;
+    atom uk;
+    atom ur;
+    atom vi;
+    atom cy;
+    atom xh;
+    atom yo;
+    atom zu;
+
+
+
+    // iso 639_3
+
+
     // builder options
     atom all_languages;
     atom all_spoken_languages;
