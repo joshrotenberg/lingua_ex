@@ -158,10 +158,82 @@ rustler_atoms! {
     atom yo;
     atom zu;
 
-
-
     // iso 639_3
-
+    atom afr;
+    atom sqi;
+    atom ara;
+    atom hye;
+    atom aze;
+    atom eus;
+    atom bel;
+    atom ben;
+    atom nob;
+    atom bos;
+    atom bul;
+    atom cat;
+    atom zho;
+    atom hrv;
+    atom ces;
+    atom dan;
+    atom nld;
+    atom eng;
+    atom epo;
+    atom est;
+    atom fin;
+    atom fra;
+    atom lug;
+    atom kat;
+    atom deu;
+    atom ell;
+    atom guj;
+    atom heb;
+    atom hin;
+    atom hun;
+    atom isl;
+    atom ind;
+    atom gle;
+    atom ita;
+    atom jpn;
+    atom kaz;
+    atom kor;
+    atom lat;
+    atom lav;
+    atom lit;
+    atom mkd;
+    atom msa;
+    atom mri;
+    atom mar;
+    atom mon;
+    atom nno;
+    atom fas;
+    atom pol;
+    atom por;
+    atom pan;
+    atom ron;
+    atom rus;
+    atom srp;
+    atom sna;
+    atom slk;
+    atom slv;
+    atom som;
+    atom sot;
+    atom spa;
+    atom swa;
+    atom swe;
+    atom tgl;
+    atom tam;
+    atom tel;
+    atom tha;
+    atom tso;
+    atom tsn;
+    atom tur;
+    atom ukr;
+    atom urd;
+    atom vie;
+    atom cym;
+    atom xho;
+    atom yor;
+    atom zul;
 
     // builder options
     atom all_languages;
