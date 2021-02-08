@@ -4,6 +4,27 @@ use std::fmt;
 use std::ops::Deref;
 
 #[derive(Debug)]
+pub enum LanguageType {
+    Language(Language),
+    IsoCode639_1(IsoCode639_1),
+    IsoCode639_3(IsoCode639_3),
+}
+
+impl<'a> Decoder<'a> for LanguageType {
+    fn decode(term: Term<'a>) -> NifResult<Self> {
+        if let Ok(language) = term.decode::<Language>() {
+            Ok(LanguageType::Language(language))
+        } else if let Ok(iso6391) = term.decode::<IsoCode639_1>() {
+            Ok(LanguageType::IsoCode639_1(iso6391))
+        } else if let Ok(iso6393) = term.decode::<IsoCode639_3>() {
+            Ok(LanguageType::IsoCode639_3(iso6393))
+        } else {
+            Err(Error::BadArg)
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct Language(pub lingua::Language);
 
 impl<'a> Decoder<'a> for Language {
@@ -419,6 +440,88 @@ impl<'a> Decoder<'a> for IsoCode639_1 {
     }
 }
 
+impl Encoder for IsoCode639_1 {
+    fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
+        match self {
+            IsoCode639_1(lingua::IsoCode639_1::AF) => atoms::af().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SQ) => atoms::sq().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::AR) => atoms::ar().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::HY) => atoms::hy().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::AZ) => atoms::az().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::EU) => atoms::eu().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::BE) => atoms::be().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::BN) => atoms::bn().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::NB) => atoms::nb().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::BS) => atoms::bs().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::BG) => atoms::bg().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::CA) => atoms::ca().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ZH) => atoms::zh().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::HR) => atoms::hr().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::CS) => atoms::cs().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::DA) => atoms::da().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::NL) => atoms::nl().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::EN) => atoms::en().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::EO) => atoms::eo().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ET) => atoms::et().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::FI) => atoms::fi().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::FR) => atoms::fr().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::LG) => atoms::lg().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::KA) => atoms::ka().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::DE) => atoms::de().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::EL) => atoms::el().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::GU) => atoms::gu().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::HE) => atoms::he().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::HI) => atoms::hi().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::HU) => atoms::hu().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::IS) => atoms::is().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ID) => atoms::id().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::GA) => atoms::ga().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::IT) => atoms::it().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::JA) => atoms::ja().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::KK) => atoms::kk().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::KO) => atoms::ko().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::LA) => atoms::la().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::LV) => atoms::lv().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::LT) => atoms::lt().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::MK) => atoms::mk().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::MS) => atoms::ms().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::MI) => atoms::mi().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::MR) => atoms::mr().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::MN) => atoms::mn().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::NN) => atoms::nn().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::FA) => atoms::fa().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::PL) => atoms::pl().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::PT) => atoms::pt().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::PA) => atoms::pa().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::RO) => atoms::ro().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::RU) => atoms::ru().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SR) => atoms::sr().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SN) => atoms::sn().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SK) => atoms::sk().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SL) => atoms::sl().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SO) => atoms::so().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ST) => atoms::st().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ES) => atoms::es().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SW) => atoms::sw().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::SV) => atoms::sv().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TL) => atoms::tl().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TA) => atoms::ta().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TE) => atoms::te().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TH) => atoms::th().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TS) => atoms::ts().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TN) => atoms::tn().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::TR) => atoms::tr().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::UK) => atoms::uk().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::UR) => atoms::ur().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::VI) => atoms::vi().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::CY) => atoms::cy().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::XH) => atoms::xh().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::YO) => atoms::yo().encode(env),
+            IsoCode639_1(lingua::IsoCode639_1::ZU) => atoms::zu().encode(env),
+        }
+    }
+}
+
 impl Deref for IsoCode639_1 {
     type Target = lingua::IsoCode639_1;
 
@@ -590,6 +693,88 @@ impl<'a> Decoder<'a> for IsoCode639_3 {
             Ok(IsoCode639_3(lingua::IsoCode639_3::ZUL))
         } else {
             Err(Error::BadArg)
+        }
+    }
+}
+
+impl Encoder for IsoCode639_3 {
+    fn encode<'a>(&self, env: Env<'a>) -> Term<'a> {
+        match self {
+            IsoCode639_3(lingua::IsoCode639_3::AFR) => atoms::afr().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SQI) => atoms::sqi().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ARA) => atoms::ara().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::HYE) => atoms::hye().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::AZE) => atoms::aze().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::EUS) => atoms::eus().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::BEL) => atoms::bel().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::BEN) => atoms::ben().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::NOB) => atoms::nob().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::BOS) => atoms::bos().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::BUL) => atoms::bul().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::CAT) => atoms::cat().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ZHO) => atoms::zho().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::HRV) => atoms::hrv().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::CES) => atoms::ces().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::DAN) => atoms::dan().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::NLD) => atoms::nld().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ENG) => atoms::eng().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::EPO) => atoms::epo().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::EST) => atoms::est().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::FIN) => atoms::fin().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::FRA) => atoms::fra().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::LUG) => atoms::lug().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::KAT) => atoms::kat().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::DEU) => atoms::deu().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ELL) => atoms::ell().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::GUJ) => atoms::guj().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::HEB) => atoms::heb().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::HIN) => atoms::hin().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::HUN) => atoms::hun().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ISL) => atoms::isl().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::IND) => atoms::ind().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::GLE) => atoms::gle().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ITA) => atoms::ita().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::JPN) => atoms::jpn().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::KAZ) => atoms::kaz().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::KOR) => atoms::kor().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::LAT) => atoms::lat().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::LAV) => atoms::lav().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::LIT) => atoms::lit().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::MKD) => atoms::mkd().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::MSA) => atoms::msa().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::MRI) => atoms::mri().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::MAR) => atoms::mar().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::MON) => atoms::mon().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::NNO) => atoms::nno().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::FAS) => atoms::fas().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::POL) => atoms::pol().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::POR) => atoms::por().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::PAN) => atoms::pan().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::RON) => atoms::ron().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::RUS) => atoms::rus().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SRP) => atoms::srp().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SNA) => atoms::sna().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SLK) => atoms::slk().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SLV) => atoms::slv().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SOM) => atoms::som().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SOT) => atoms::sot().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SPA) => atoms::spa().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SWA) => atoms::swa().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::SWE) => atoms::swe().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TGL) => atoms::tgl().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TAM) => atoms::tam().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TEL) => atoms::tel().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::THA) => atoms::tha().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TSO) => atoms::tso().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TSN) => atoms::tsn().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::TUR) => atoms::tur().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::UKR) => atoms::ukr().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::URD) => atoms::urd().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::VIE) => atoms::vie().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::CYM) => atoms::cym().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::XHO) => atoms::xho().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::YOR) => atoms::yor().encode(env),
+            IsoCode639_3(lingua::IsoCode639_3::ZUL) => atoms::zul().encode(env),
         }
     }
 }
