@@ -244,11 +244,14 @@ rustler_atoms! {
     atom all_languages_with_latin_script;
 
     atom with_languages;
+    atom with_iso_codes_639_1;
+    atom with_iso_codes_639_3;
     atom without_languages;
 
     // errors
     atom no_match;
     atom unrecognized_builder_option;
     atom unrecognized_language;
+    atom unrecognized_iso_code;
     atom out_of_range_minimum_relative_distance;
 }
