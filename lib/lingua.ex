@@ -1,5 +1,4 @@
 defmodule Lingua do
-  @moduletag timeout: :infinity
   @moduledoc """
   Lingua wraps [Peter M. Stahl](https://github.com/pemistahl)'s [linuga-rs](https://github.com/pemistahl/lingua-rs) language detection library.
   This wrapper follows the lingua-rs API closely, so consult the [documentation](https://docs.rs/lingua/1.0.3/lingua/index.html) for more information.
@@ -19,7 +18,6 @@ defmodule Lingua do
       iex> Lingua.init()
       :ok
   """
-  @spec init :: any
   defdelegate init(), to: Lingua.Nif
 
   @doc """
@@ -69,7 +67,6 @@ defmodule Lingua do
       {:ok, [english: 1.0]}
 
   """
-  @spec detect(any, keyword) :: any
   def detect(text, options \\ []) do
     builder_option = Keyword.get(options, :builder_option, @default_builder_option)
     languages = Keyword.get(options, :languages, @default_languages)
@@ -99,11 +96,132 @@ defmodule Lingua do
   @doc """
   Like `detect`, but returns the result value or raises an error.
   """
-  @spec detect!(any, keyword) :: any
   def detect!(text, options \\ []) do
     case detect(text, options) do
       {:ok, value} -> value
       {:error, error} -> raise error
     end
   end
+
+  @doc """
+  Get the list of supported languages.
+
+  ## Example
+
+      iex> Lingua.all_languages()
+      [:armenian, :basque, :slovak, :vietnamese, :polish, :icelandic, :bulgarian, ...]
+  """
+  defdelegate all_languages(), to: Lingua.Nif
+
+  @doc """
+  Get the list of supported spoken languages.
+
+  ## Example
+
+      iex> Lingua.all_spoken_languages()
+      [:yoruba, :danish, :finnish, :punjabi, :italian, :french, :ganda, :georgian, ...]
+  """
+  defdelegate all_spoken_languages(), to: Lingua.Nif
+
+  @doc """
+  Get the list of supported languages using Arabic script.
+
+  ## Example
+
+      iex> Lingua.all_with_arabic_script()
+      [:arabic, :persian, :urdu]
+  """
+  defdelegate all_with_arabic_script(), to: Lingua.Nif
+
+  @doc """
+  Get the list of supported languages using Cyrillic script.
+
+  ## Example
+
+      iex> Lingua.all_with_cyrillic_script()
+      [:ukrainian, :kazakh, :russian, :belarusian, :macedonian, :bulgarian, :mongolian, :serbian]
+  """
+  defdelegate all_with_cyrillic_script(), to: Lingua.Nif
+
+  @doc """
+  Get the list of supported languages using Devanagari script.
+
+  ## Example
+
+      iex> Lingua.all_with_devanagari_script()
+      [:marathi, :hindi]
+  """
+  defdelegate all_with_devanagari_script(), to: Lingua.Nif
+
+  @doc """
+  Get the list of supported languages using Latin script.
+
+  ## Example
+
+      iex> Lingua.all_with_latin_script()
+      [:afrikaans, :finnish, :french, :icelandic, :portuguese, :estonian, ...]
+  """
+  defdelegate all_with_latin_script(), to: Lingua.Nif
+
+  @doc """
+  Get the language for the given ISO 639-1 language code.
+
+  ## Example
+
+      iex> Lingua.language_for_iso_code_639_1(:en)
+      {:ok, :english}
+      iex> Lingua.language_for_iso_code_639_1(:er)
+      {:error, :unrecognized_iso_code}
+  """
+  defdelegate language_for_iso_code_639_1(code), to: Lingua.Nif
+
+  @doc """
+  Get the language for the given ISO 639-3 language code.
+
+  ## Example
+
+      iex> Lingua.language_for_iso_code_639_3(:eng)
+      {:ok, :english}
+      iex> Lingua.language_for_iso_code_639_3(:enr)
+      {:error, :unrecognized_iso_code}
+  """
+  defdelegate language_for_iso_code_639_3(code), to: Lingua.Nif
+
+  @doc """
+  Get the language for the given ISO 639-1 or 639-3 language code.
+
+  ## Example
+
+      iex> Lingua.language_for_iso_code(:en)
+      {:ok, :english}
+      iex> Lingua.language_for_iso_code(:eng)
+      {:ok, :english}
+      iex> Lingua.language_for_iso_code(:mop)
+      {:error, :unrecognized_iso_code}
+  """
+  defdelegate language_for_iso_code(code), to: Lingua.Nif
+
+  @doc """
+  Get the ISO 639-1 language code for the given language.
+
+  ## Example
+
+      iex> Lingua.iso_code_639_1_for_language(:english)
+      {:ok, :en}
+      iex> Lingua.iso_code_639_1_for_language(:nope)
+      {:error, :unrecognized_language}
+  """
+  defdelegate iso_code_639_1_for_language(language), to: Lingua.Nif
+
+  @doc """
+  Get the ISO 639-3 language code for the given language.
+
+  ## Example
+
+      iex> Lingua.iso_code_639_3_for_language(:english)
+      {:ok, :eng}
+      iex> Lingua.iso_code_639_1_for_language(:nope)
+      {:error, :unrecognized_language}
+  """
+  defdelegate iso_code_639_3_for_language(language), to: Lingua.Nif
 end
