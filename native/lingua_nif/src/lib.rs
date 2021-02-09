@@ -14,7 +14,13 @@ mod language;
 rustler::rustler_export_nifs! {
     "Elixir.Lingua.Nif",
     [
-        // language utility function
+        // language detection
+        // http://erlang.org/pipermail/erlang-questions/2018-October/096531.html
+        ("init", 0, init, SchedulerFlags::DirtyCpu),
+        ("detect_language_of", 4, detect_language_of, SchedulerFlags::DirtyCpu),
+        ("compute_language_confidence_values",  4, compute_language_confidence_values, SchedulerFlags::DirtyCpu),
+
+        // language utility functions
         ("all_languages", 0, all_languages),
         ("all_spoken_languages", 0, all_spoken_languages),
         ("all_with_arabic_script", 0, all_with_arabic_script),
@@ -26,15 +32,60 @@ rustler::rustler_export_nifs! {
         ("language_for_iso_code_639_3", 1, language_for_iso_code_639_3),
         ("iso_code_639_1_for_language", 1, iso_code_639_1_for_language),
         ("iso_code_639_3_for_language", 1, iso_code_639_3_for_language),
-
-        // language detection
-        ("init", 0, init, SchedulerFlags::DirtyIo),
-        ("detect_language_of", 4, detect_language_of, SchedulerFlags::DirtyIo),
-        ("compute_language_confidence_values",  4, compute_language_confidence_values, SchedulerFlags::DirtyIo),
     ],
     None
 }
 
+// language detection
+fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+    LanguageDetectorBuilder::from_all_languages().build();
+
+    Ok((atoms::ok()).encode(env))
+}
+
+fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
+    let text: String = args[0].decode()?;
+
+    let opt: BuilderOption = args[1].decode()?;
+    let languages = decode_languages(args[2])?;
+    let mut builder = create_builder(opt, languages);
+    let minimum_relative_distance: f64 = args[3].decode()?;
+
+    builder.with_minimum_relative_distance(minimum_relative_distance);
+    let detector: LanguageDetector = builder.build();
+
+    let detected_language: Option<Language> = detector.detect_language_of(text);
+
+    match detected_language {
+        Some(language) => Ok((atoms::ok(), language::Language(language)).encode(env)),
+        None => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+    }
+}
+
+fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
+    let text: String = args[0].decode()?;
+
+    let opt: BuilderOption = args[1].decode()?;
+    let languages = decode_languages(args[2])?;
+    let mut builder = create_builder(opt, languages);
+    let minimum_relative_distance: f64 = args[3].decode()?;
+
+    builder.with_minimum_relative_distance(minimum_relative_distance);
+    let detector: LanguageDetector = builder.build();
+
+    let confidence_values: Vec<(Language, f64)> = detector.compute_language_confidence_values(text);
+    let result: Vec<(language::Language, f64)> = confidence_values
+        .into_iter()
+        .map(|(language, value)| (language::Language(language.clone()), value))
+        .collect();
+
+    match result.len() {
+        0 => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+        _ => Ok((atoms::ok(), result).encode(env)),
+    }
+}
+
+// language utility functions
 fn _all_languages<'a>(env: Env<'a>, f: fn() -> HashSet<lingua::Language>) -> NifResult<Term<'a>> {
     Ok((f()
         .into_iter()
@@ -118,54 +169,6 @@ fn iso_code_639_3_for_language<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult
             Ok((atoms::ok(), language::IsoCode639_3(code)).encode(env))
         }
         _ => Ok((atoms::error(), atoms::unrecognized_language()).encode(env)),
-    }
-}
-
-fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    LanguageDetectorBuilder::from_all_languages().build();
-
-    Ok((atoms::ok()).encode(env))
-}
-
-fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let text: String = args[0].decode()?;
-
-    let opt: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let mut builder = create_builder(opt, languages);
-    let minimum_relative_distance: f64 = args[3].decode()?;
-
-    builder.with_minimum_relative_distance(minimum_relative_distance);
-    let detector: LanguageDetector = builder.build();
-
-    let detected_language: Option<Language> = detector.detect_language_of(text);
-
-    match detected_language {
-        Some(language) => Ok((atoms::ok(), language::Language(language)).encode(env)),
-        None => Ok((atoms::ok(), atoms::no_match()).encode(env)),
-    }
-}
-
-fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let text: String = args[0].decode()?;
-
-    let opt: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let mut builder = create_builder(opt, languages);
-    let minimum_relative_distance: f64 = args[3].decode()?;
-
-    builder.with_minimum_relative_distance(minimum_relative_distance);
-    let detector: LanguageDetector = builder.build();
-
-    let confidence_values: Vec<(Language, f64)> = detector.compute_language_confidence_values(text);
-    let result: Vec<(language::Language, f64)> = confidence_values
-        .into_iter()
-        .map(|(language, value)| (language::Language(language.clone()), value))
-        .collect();
-
-    match result.len() {
-        0 => Ok((atoms::ok(), atoms::no_match()).encode(env)),
-        _ => Ok((atoms::ok(), result).encode(env)),
     }
 }
 
