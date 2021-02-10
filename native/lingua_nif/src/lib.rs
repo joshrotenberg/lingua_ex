@@ -175,7 +175,6 @@ fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<lingua::Language>> {
 }
 
 fn build_detector<'a>(args: &[Term<'a>]) -> NifResult<lingua::LanguageDetector> {
-
     let option: BuilderOption = args[1].decode()?;
     let languages = decode_languages(args[2])?;
     let minimum_relative_distance: f64 = args[3].decode()?;
