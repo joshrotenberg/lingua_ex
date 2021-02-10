@@ -46,13 +46,7 @@ fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
 fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     let text: String = args[0].decode()?;
 
-    let opt: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let mut builder = create_builder(opt, languages);
-    let minimum_relative_distance: f64 = args[3].decode()?;
-
-    builder.with_minimum_relative_distance(minimum_relative_distance);
-    let detector: LanguageDetector = builder.build();
+    let detector: LanguageDetector = build_detector(args)?;
 
     let detected_language: Option<Language> = detector.detect_language_of(text);
 
@@ -65,13 +59,7 @@ fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>
 fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     let text: String = args[0].decode()?;
 
-    let opt: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let mut builder = create_builder(opt, languages);
-    let minimum_relative_distance: f64 = args[3].decode()?;
-
-    builder.with_minimum_relative_distance(minimum_relative_distance);
-    let detector: LanguageDetector = builder.build();
+    let detector: LanguageDetector = build_detector(args)?;
 
     let confidence_values: Vec<(Language, f64)> = detector.compute_language_confidence_values(text);
     let result: Vec<(language::Language, f64)> = confidence_values
@@ -86,36 +74,28 @@ fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> Ni
 }
 
 // language utility functions
-fn _all_languages<'a>(env: Env<'a>, f: fn() -> HashSet<lingua::Language>) -> NifResult<Term<'a>> {
-    Ok((f()
-        .into_iter()
-        .map(|language| language::Language(language))
-        .collect::<Vec<language::Language>>())
-    .encode(env))
-}
-
 fn all_languages<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all)
+    all(env, lingua::Language::all)
 }
 
 fn all_spoken_languages<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all_spoken_ones)
+    all(env, lingua::Language::all_spoken_ones)
 }
 
 fn all_with_arabic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all_with_arabic_script)
+    all(env, lingua::Language::all_with_arabic_script)
 }
 
 fn all_with_cyrillic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all_with_cyrillic_script)
+    all(env, lingua::Language::all_with_cyrillic_script)
 }
 
 fn all_with_devanagari_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all_with_devanagari_script)
+    all(env, lingua::Language::all_with_devanagari_script)
 }
 
 fn all_with_latin_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    _all_languages(env, lingua::Language::all_with_latin_script)
+    all(env, lingua::Language::all_with_latin_script)
 }
 
 fn language_for_iso_code<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
@@ -172,6 +152,15 @@ fn iso_code_639_3_for_language<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult
     }
 }
 
+fn all<'a>(env: Env<'a>, f: fn() -> HashSet<lingua::Language>) -> NifResult<Term<'a>> {
+    let mut languages = f()
+        .into_iter()
+        .map(|language| language::Language(language))
+        .collect::<Vec<language::Language>>();
+    languages.sort_by(|a, b| a.cmp(b));
+    Ok((languages).encode(env))
+}
+
 fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<lingua::Language>> {
     let language_types: Vec<language::LanguageType> = arg.decode()?;
 
@@ -185,8 +174,13 @@ fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<lingua::Language>> {
         .collect())
 }
 
-fn create_builder(option: BuilderOption, languages: Vec<Language>) -> LanguageDetectorBuilder {
-    match option {
+fn build_detector<'a>(args: &[Term<'a>]) -> NifResult<lingua::LanguageDetector> {
+
+    let option: BuilderOption = args[1].decode()?;
+    let languages = decode_languages(args[2])?;
+    let minimum_relative_distance: f64 = args[3].decode()?;
+
+    let mut builder = match option {
         BuilderOption::AllLanguages => LanguageDetectorBuilder::from_all_languages(),
         BuilderOption::AllSpokenLanguages => LanguageDetectorBuilder::from_all_spoken_languages(),
         BuilderOption::AllLanguagesWithArabicScript => {
@@ -206,5 +200,9 @@ fn create_builder(option: BuilderOption, languages: Vec<Language>) -> LanguageDe
         BuilderOption::WithoutLanguages => {
             LanguageDetectorBuilder::from_all_languages_without(&languages)
         }
-    }
+    };
+
+    builder.with_minimum_relative_distance(minimum_relative_distance);
+
+    Ok(builder.build())
 }
