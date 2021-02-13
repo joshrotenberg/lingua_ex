@@ -1,10 +1,10 @@
 #[macro_use]
 extern crate rustler;
 
-use crate::iso_639_1::IsoCode639_1;
-use crate::iso_639_3::IsoCode639_3;
-use crate::language::Language;
-use crate::language_type::LanguageType;
+use crate::wrapper::iso_639_1::IsoCode639_1;
+use crate::wrapper::iso_639_3::IsoCode639_3;
+use crate::wrapper::language::Language;
+use crate::wrapper::LanguageType;
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
 use lingua::{LanguageDetector, LanguageDetectorBuilder};
@@ -13,10 +13,7 @@ use std::collections::hash_set::HashSet;
 
 mod atoms;
 mod builder;
-mod iso_639_1;
-mod iso_639_3;
-mod language;
-mod language_type;
+mod wrapper;
 
 rustler::rustler_export_nifs! {
     "Elixir.Lingua.Nif",

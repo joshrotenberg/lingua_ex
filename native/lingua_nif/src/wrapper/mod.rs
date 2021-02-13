@@ -1,7 +1,12 @@
-use crate::iso_639_1::IsoCode639_1;
-use crate::iso_639_3::IsoCode639_3;
-use crate::language::Language;
 use rustler::{Decoder, Error, NifResult, Term};
+
+pub mod language;
+pub mod iso_639_1;
+pub mod iso_639_3;
+
+ use self::iso_639_1::IsoCode639_1;
+ use self::iso_639_3::IsoCode639_3;
+ use self::language::Language;
 
 #[derive(Debug)]
 pub enum LanguageType {
@@ -23,3 +28,4 @@ impl<'a> Decoder<'a> for LanguageType {
         }
     }
 }
+
