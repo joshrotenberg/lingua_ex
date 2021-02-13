@@ -30,10 +30,10 @@ rustler::rustler_export_nifs! {
         // language utility functions
         ("all_languages", 0, all_languages),
         ("all_spoken_languages", 0, all_spoken_languages),
-        ("all_with_arabic_script", 0, all_with_arabic_script),
-        ("all_with_cyrillic_script", 0, all_with_cyrillic_script),
-        ("all_with_devanagari_script", 0, all_with_devanagari_script),
-        ("all_with_latin_script", 0, all_with_latin_script),
+        ("all_languages_with_arabic_script", 0, all_languages_with_arabic_script),
+        ("all_languages_with_cyrillic_script", 0, all_languages_with_cyrillic_script),
+        ("all_languages_with_devanagari_script", 0, all_languages_with_devanagari_script),
+        ("all_languages_with_latin_script", 0, all_languages_with_latin_script),
         ("language_for_iso_code", 1, language_for_iso_code),
         ("language_for_iso_code_639_1", 1, language_for_iso_code_639_1),
         ("language_for_iso_code_639_3", 1, language_for_iso_code_639_3),
@@ -90,19 +90,19 @@ fn all_spoken_languages<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<
     all(env, linguaLanguage::all_spoken_ones)
 }
 
-fn all_with_arabic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn all_languages_with_arabic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_arabic_script)
 }
 
-fn all_with_cyrillic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn all_languages_with_cyrillic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_cyrillic_script)
 }
 
-fn all_with_devanagari_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn all_languages_with_devanagari_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_devanagari_script)
 }
 
-fn all_with_latin_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn all_languages_with_latin_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_latin_script)
 }
 
