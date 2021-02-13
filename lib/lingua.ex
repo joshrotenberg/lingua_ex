@@ -110,7 +110,16 @@ defmodule Lingua do
   ## Example
 
       iex> Lingua.all_languages()
-      [:armenian, :basque, :slovak, :vietnamese, :polish, :icelandic, :bulgarian, ...]
+      [:afrikaans, :albanian, :arabic, :armenian, :azerbaijani, :basque, :belarusian,
+       :bengali, :bokmal, :bosnian, :bulgarian, :catalan, :chinese, :croatian, :czech,
+       :danish, :dutch, :english, :esperanto, :estonian, :finnish, :french, :ganda,
+       :georgian, :german, :greek, :gujarati, :hebrew, :hindi, :hungarian, :icelandic,
+       :indonesian, :irish, :italian, :japanese, :kazakh, :korean, :latin, :latvian,
+       :lithuanian, :macedonian, :malay, :maori, :marathi, :mongolian, :nynorsk,
+       :persian, :polish, :portuguese, :punjabi, :romanian, :russian, :serbian,
+       :shona, :slovak, :slovene, :somali, :sotho, :spanish, :swahili, :swedish,
+       :tagalog, :tamil, :telugu, :thai, :tsonga, :tswana, :turkish, :ukrainian,
+       :urdu, :vietnamese, :welsh, :xhosa, :yoruba, :zulu]
   """
   defdelegate all_languages(), to: Lingua.Nif
 
@@ -120,7 +129,16 @@ defmodule Lingua do
   ## Example
 
       iex> Lingua.all_spoken_languages()
-      [:yoruba, :danish, :finnish, :punjabi, :italian, :french, :ganda, :georgian, ...]
+      [:afrikaans, :albanian, :arabic, :armenian, :azerbaijani, :basque, :belarusian,
+       :bengali, :bokmal, :bosnian, :bulgarian, :catalan, :chinese, :croatian, :czech,
+       :danish, :dutch, :english, :esperanto, :estonian, :finnish, :french, :ganda,
+       :georgian, :german, :greek, :gujarati, :hebrew, :hindi, :hungarian, :icelandic,
+       :indonesian, :irish, :italian, :japanese, :kazakh, :korean, :latvian,
+       :lithuanian, :macedonian, :malay, :maori, :marathi, :mongolian, :nynorsk,
+       :persian, :polish, :portuguese, :punjabi, :romanian, :russian, :serbian,
+       :shona, :slovak, :slovene, :somali, :sotho, :spanish, :swahili, :swedish,
+       :tagalog, :tamil, :telugu, :thai, :tsonga, :tswana, :turkish, :ukrainian,
+       :urdu, :vietnamese, :welsh, :xhosa, :yoruba, :zulu]
   """
   defdelegate all_spoken_languages(), to: Lingua.Nif
 
@@ -129,40 +147,46 @@ defmodule Lingua do
 
   ## Example
 
-      iex> Lingua.all_with_arabic_script()
+      iex> Lingua.all_languages_with_arabic_script()
       [:arabic, :persian, :urdu]
   """
-  defdelegate all_with_arabic_script(), to: Lingua.Nif
+  defdelegate all_languages_with_arabic_script(), to: Lingua.Nif
 
   @doc """
   Get the list of supported languages using Cyrillic script.
 
   ## Example
 
-      iex> Lingua.all_with_cyrillic_script()
-      [:ukrainian, :kazakh, :russian, :belarusian, :macedonian, :bulgarian, :mongolian, :serbian]
+      iex> Lingua.all_languages_with_cyrillic_script()
+      [:belarusian, :bulgarian, :kazakh, :macedonian, :mongolian, :russian, :serbian, :ukrainian]
   """
-  defdelegate all_with_cyrillic_script(), to: Lingua.Nif
+  defdelegate all_languages_with_cyrillic_script(), to: Lingua.Nif
 
   @doc """
   Get the list of supported languages using Devanagari script.
 
   ## Example
 
-      iex> Lingua.all_with_devanagari_script()
-      [:marathi, :hindi]
+      iex> Lingua.all_languages_with_devanagari_script()
+      [:hindi, :marathi]
   """
-  defdelegate all_with_devanagari_script(), to: Lingua.Nif
+  defdelegate all_languages_with_devanagari_script(), to: Lingua.Nif
 
   @doc """
   Get the list of supported languages using Latin script.
 
   ## Example
 
-      iex> Lingua.all_with_latin_script()
-      [:afrikaans, :finnish, :french, :icelandic, :portuguese, :estonian, ...]
+      iex> Lingua.all_languages_with_latin_script()
+      [:afrikaans, :albanian, :azerbaijani, :basque, :bokmal, :bosnian, :catalan,
+       :croatian, :czech, :danish, :dutch, :english, :esperanto, :estonian, :finnish,
+       :french, :ganda, :german, :hungarian, :icelandic, :indonesian, :irish,
+       :italian, :latin, :latvian, :lithuanian, :malay, :maori, :nynorsk, :polish,
+       :portuguese, :romanian, :shona, :slovak, :slovene, :somali, :sotho, :spanish,
+       :swahili, :swedish, :tagalog, :tsonga, :tswana, :turkish, :vietnamese, :welsh,
+       :xhosa, :yoruba, :zulu]
   """
-  defdelegate all_with_latin_script(), to: Lingua.Nif
+  defdelegate all_languages_with_latin_script(), to: Lingua.Nif
 
   @doc """
   Get the language for the given ISO 639-1 language code.
