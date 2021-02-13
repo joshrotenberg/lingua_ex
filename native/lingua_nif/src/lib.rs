@@ -98,7 +98,10 @@ fn all_languages_with_cyrillic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> N
     all(env, linguaLanguage::all_with_cyrillic_script)
 }
 
-fn all_languages_with_devanagari_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn all_languages_with_devanagari_script<'a>(
+    env: Env<'a>,
+    _args: &[Term<'a>],
+) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_devanagari_script)
 }
 
