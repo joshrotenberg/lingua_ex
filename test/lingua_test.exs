@@ -1,7 +1,7 @@
 defmodule LinguaTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   @moduletag timeout: :infinity
-  # doctest Lingua
+  doctest Lingua
 
   @total_language_count 75
   @spoken_language_count 74
@@ -34,38 +34,38 @@ defmodule LinguaTest do
              |> Enum.count() == @spoken_language_count
     end
 
-    test "all_with_arabic_script/0" do
-      assert Lingua.all_with_arabic_script() |> Enum.member?(:arabic)
-      assert Lingua.all_with_arabic_script() |> Enum.member?(:persian)
-      assert Lingua.all_with_arabic_script() |> Enum.member?(:urdu)
+    test "all_languages_with_arabic_script/0" do
+      assert Lingua.all_languages_with_arabic_script() |> Enum.member?(:arabic)
+      assert Lingua.all_languages_with_arabic_script() |> Enum.member?(:persian)
+      assert Lingua.all_languages_with_arabic_script() |> Enum.member?(:urdu)
 
-      assert Lingua.all_with_arabic_script()
+      assert Lingua.all_languages_with_arabic_script()
              |> Enum.count() == @arabic_count
     end
 
-    test "all_with_cyrillic_script/0" do
-      assert Lingua.all_with_cyrillic_script() |> Enum.member?(:russian)
-      assert Lingua.all_with_cyrillic_script() |> Enum.member?(:ukrainian)
-      assert Lingua.all_with_cyrillic_script() |> Enum.member?(:macedonian)
+    test "all_languages_with_cyrillic_script/0" do
+      assert Lingua.all_languages_with_cyrillic_script() |> Enum.member?(:russian)
+      assert Lingua.all_languages_with_cyrillic_script() |> Enum.member?(:ukrainian)
+      assert Lingua.all_languages_with_cyrillic_script() |> Enum.member?(:macedonian)
 
-      assert Lingua.all_with_cyrillic_script()
+      assert Lingua.all_languages_with_cyrillic_script()
              |> Enum.count() == @cyrillic_count
     end
 
-    test "all_with_devanagari_script/0" do
-      assert Lingua.all_with_devanagari_script() |> Enum.member?(:hindi)
-      assert Lingua.all_with_devanagari_script() |> Enum.member?(:marathi)
+    test "all_languages_with_devanagari_script/0" do
+      assert Lingua.all_languages_with_devanagari_script() |> Enum.member?(:hindi)
+      assert Lingua.all_languages_with_devanagari_script() |> Enum.member?(:marathi)
 
-      assert Lingua.all_with_devanagari_script()
+      assert Lingua.all_languages_with_devanagari_script()
              |> Enum.count() == @devanagari_count
     end
 
-    test "all_with_latin_script/0" do
-      assert Lingua.all_with_latin_script() |> Enum.member?(:welsh)
-      assert Lingua.all_with_latin_script() |> Enum.member?(:bosnian)
-      assert Lingua.all_with_latin_script() |> Enum.member?(:swedish)
+    test "all_languages_with_latin_script/0" do
+      assert Lingua.all_languages_with_latin_script() |> Enum.member?(:welsh)
+      assert Lingua.all_languages_with_latin_script() |> Enum.member?(:bosnian)
+      assert Lingua.all_languages_with_latin_script() |> Enum.member?(:swedish)
 
-      assert Lingua.all_with_latin_script()
+      assert Lingua.all_languages_with_latin_script()
              |> Enum.count() == @latin_count
     end
 
@@ -113,6 +113,11 @@ defmodule LinguaTest do
                languages: [:english, :russian, :polish]
              ) == {:ok, :polish}
 
+      assert Lingua.detect("państwowych",
+               builder_option: :with_languages,
+               languages: [:eng, :russian, :pol]
+             ) == {:ok, :polish}
+
       assert Lingua.detect("ѕидови", builder_option: :all_languages_with_cyrillic_script) ==
                {:ok, :macedonian}
 
@@ -127,6 +132,28 @@ defmodule LinguaTest do
                compute_language_confidence_values: true
              ) ==
                {:ok, [english: 1.0]}
+
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:en, :ru, :he],
+               compute_language_confidence_values: true
+             ) ==
+               {:ok, [english: 1.0]}
+
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:eng, :rus, :heb],
+               compute_language_confidence_values: true
+             ) ==
+               {:ok, [english: 1.0]}
+
+      assert_raise ArgumentError, fn ->
+        Lingua.detect("what in the world is this",
+          builder_option: :with_languages,
+          languages: [:kqjwenbg, :rus, :heb],
+          compute_language_confidence_values: true
+        )
+      end
     end
   end
 end
