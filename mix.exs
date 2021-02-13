@@ -44,8 +44,8 @@ defmodule Lingua.MixProject do
 
   defp rustc_mode(:prod), do: :release
   defp rustc_mode(:bench), do: :release
-  # defp rustc_mode(_), do: :debug
-  defp rustc_mode(_), do: :release
+  defp rustc_mode(_), do: :debug
+  # defp rustc_mode(_), do: :release
 
   defp deps do
     [
