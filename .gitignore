@@ -33,3 +33,6 @@ target
 .DS_Store
 
 /priv/native/
+
+.idea
+lingua.iml
