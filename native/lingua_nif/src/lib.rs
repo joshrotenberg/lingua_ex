@@ -1,15 +1,16 @@
 #[macro_use]
 extern crate rustler;
 
-use crate::wrapper::iso_639_1::IsoCode639_1;
-use crate::wrapper::iso_639_3::IsoCode639_3;
-use crate::wrapper::language::Language;
-use crate::wrapper::LanguageType;
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
 use lingua::{LanguageDetector, LanguageDetectorBuilder};
 use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
 use std::collections::hash_set::HashSet;
+
+use crate::wrapper::iso_639_1::IsoCode639_1;
+use crate::wrapper::iso_639_3::IsoCode639_3;
+use crate::wrapper::language::Language;
+use crate::wrapper::LanguageType;
 
 mod atoms;
 mod builder;
@@ -42,7 +43,9 @@ rustler::rustler_export_nifs! {
 
 // language detection
 fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    LanguageDetectorBuilder::from_all_languages().with_preloaded_language_models().build();
+    LanguageDetectorBuilder::from_all_languages()
+        .with_preloaded_language_models()
+        .build();
 
     Ok((atoms::ok()).encode(env))
 }
