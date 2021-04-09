@@ -8,11 +8,12 @@ defmodule Lingua do
   @default_languages []
   @default_minimum_relative_distance 0.0
   @default_compute_language_confidence_values false
-  @default_preload_language_models true
+  @default_preload_language_models false
 
   @doc """
   Initialize the detector. Calling this is optional but it may come in handy in cases where you want lingua-rs to load
-  the language corpora so that subsequent calls to `detect` are fast. The first time the detector is run it can take some time to load (~12 seconds on my Macbook Pro).
+  the language corpora so that subsequent calls to `detect` are fast. The first time the detector is run it can take some time to load (~12 seconds on my Macbook Pro). See
+  also the `preload_language_models` option below.
 
   ## Example
 
@@ -46,8 +47,9 @@ defmodule Lingua do
   * `minimum_relative_distance:` - specify the minimum relative distance (0.0 - 0.99) required for a language to be considered a match for the input.
   See the lingua-rs [documentation](https://docs.rs/lingua/1.0.3/lingua/struct.LanguageDetectorBuilder.html#method.with_minimum_relative_distance) for details. (defaults to `0.0`)
 
-  * `
   * `compute_language_confidence_values:` - returns the full list of language matches for the input and their confidence values. (defaults to `false`)
+
+  * `preload_language_models:` - preload all language models instead of just those required for the match. (defaults to `false`)
 
   ## Examples
 
