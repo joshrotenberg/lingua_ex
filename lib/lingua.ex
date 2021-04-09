@@ -8,6 +8,7 @@ defmodule Lingua do
   @default_languages []
   @default_minimum_relative_distance 0.0
   @default_compute_language_confidence_values false
+  @default_preload_language_models true
 
   @doc """
   Initialize the detector. Calling this is optional but it may come in handy in cases where you want lingua-rs to load
@@ -75,6 +76,9 @@ defmodule Lingua do
     minimum_relative_distance =
       Keyword.get(options, :minimum_relative_distance, @default_minimum_relative_distance)
 
+    preload_language_models =
+      Keyword.get(options, :preload_language_models, @default_preload_language_models)
+
     compute_language_confidence_values =
       Keyword.get(
         options,
@@ -88,10 +92,17 @@ defmodule Lingua do
           text,
           builder_option,
           languages,
-          minimum_relative_distance
+          minimum_relative_distance,
+          preload_language_models
         ),
       else:
-        Lingua.Nif.detect_language_of(text, builder_option, languages, minimum_relative_distance)
+        Lingua.Nif.detect_language_of(
+          text,
+          builder_option,
+          languages,
+          minimum_relative_distance,
+          preload_language_models
+        )
   end
 
   @doc """
