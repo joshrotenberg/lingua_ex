@@ -1,15 +1,16 @@
 #[macro_use]
 extern crate rustler;
 
-use crate::wrapper::iso_639_1::IsoCode639_1;
-use crate::wrapper::iso_639_3::IsoCode639_3;
-use crate::wrapper::language::Language;
-use crate::wrapper::LanguageType;
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
 use lingua::{LanguageDetector, LanguageDetectorBuilder};
 use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
 use std::collections::hash_set::HashSet;
+
+use crate::wrapper::iso_639_1::IsoCode639_1;
+use crate::wrapper::iso_639_3::IsoCode639_3;
+use crate::wrapper::language::Language;
+use crate::wrapper::LanguageType;
 
 mod atoms;
 mod builder;
@@ -21,8 +22,8 @@ rustler::rustler_export_nifs! {
         // language detection
         // http://erlang.org/pipermail/erlang-questions/2018-October/096531.html
         ("init", 0, init, SchedulerFlags::DirtyCpu),
-        ("detect_language_of", 4, detect_language_of, SchedulerFlags::DirtyCpu),
-        ("compute_language_confidence_values",  4, compute_language_confidence_values, SchedulerFlags::DirtyCpu),
+        ("detect_language_of", 5, detect_language_of, SchedulerFlags::DirtyCpu),
+        ("compute_language_confidence_values",  5, compute_language_confidence_values, SchedulerFlags::DirtyCpu),
 
         // language utility functions
         ("all_languages", 0, all_languages),
@@ -42,7 +43,9 @@ rustler::rustler_export_nifs! {
 
 // language detection
 fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    LanguageDetectorBuilder::from_all_languages().build();
+    LanguageDetectorBuilder::from_all_languages()
+        .with_preloaded_language_models()
+        .build();
 
     Ok((atoms::ok()).encode(env))
 }
@@ -190,6 +193,7 @@ fn build_detector<'a>(args: &[Term<'a>]) -> NifResult<lingua::LanguageDetector> 
     let option: BuilderOption = args[1].decode()?;
     let languages = decode_languages(args[2])?;
     let minimum_relative_distance: f64 = args[3].decode()?;
+    let preload_language_models: bool = args[4].decode()?;
 
     let mut builder = match option {
         BuilderOption::AllLanguages => LanguageDetectorBuilder::from_all_languages(),
@@ -214,6 +218,9 @@ fn build_detector<'a>(args: &[Term<'a>]) -> NifResult<lingua::LanguageDetector> 
     };
 
     builder.with_minimum_relative_distance(minimum_relative_distance);
+    if preload_language_models {
+        builder.with_preloaded_language_models();
+    }
 
     Ok(builder.build())
 }
