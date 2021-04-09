@@ -46,9 +46,10 @@ defmodule Lingua do
   * `with_minimum_relative_distance:` - specify the minimum relative distance (0.0 - 0.99) required for a language to be considered a match for the input.
   See the lingua-rs [documentation](https://docs.rs/lingua/1.0.3/lingua/struct.LanguageDetectorBuilder.html#method.with_minimum_relative_distance) for details. (defaults to `0.0`)
 
+  * `
   * `compute_language_confidence_values:` - returns the full list of language matches for the input and their confidence values. (defaults to `false`)
 
-  ## Example
+  ## Examples
 
       iex> Lingua.detect("this is definitely English")
       {:ok, :english}
