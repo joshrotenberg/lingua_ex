@@ -43,7 +43,7 @@ defmodule Lingua do
   * `languages:` - specify two or more languages to consider or to not consider depending on the `builder_option:` (defaults to `[]`). Accepts
   any combination of languages and ISO 639-1 or 639-3 codes, for example: `[:english, :ru, :lit]` to consider English, Russian and Lithuanian.
 
-  * `with_minimum_relative_distance:` - specify the minimum relative distance (0.0 - 0.99) required for a language to be considered a match for the input.
+  * `minimum_relative_distance:` - specify the minimum relative distance (0.0 - 0.99) required for a language to be considered a match for the input.
   See the lingua-rs [documentation](https://docs.rs/lingua/1.0.3/lingua/struct.LanguageDetectorBuilder.html#method.with_minimum_relative_distance) for details. (defaults to `0.0`)
 
   * `
