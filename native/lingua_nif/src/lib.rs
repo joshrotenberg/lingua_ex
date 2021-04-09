@@ -42,7 +42,7 @@ rustler::rustler_export_nifs! {
 
 // language detection
 fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    LanguageDetectorBuilder::from_all_languages().build();
+    LanguageDetectorBuilder::from_all_languages().with_preloaded_language_models().build();
 
     Ok((atoms::ok()).encode(env))
 }
