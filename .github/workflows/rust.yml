@@ -9,6 +9,8 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      working-directory: native/lingua_nif
     strategy:
       matrix:
         rust:
@@ -22,7 +24,6 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          working-directory: "native/lingua_nif"
           profile: minimal
           toolchain: ${{ matrix.rust }}
           override: true
@@ -30,22 +31,18 @@ jobs:
 
       - uses: actions-rs/cargo@v1
         with:
-          working-directory: "native/lingua_nif"
           command: build
 
       - uses: actions-rs/cargo@v1
         with:
-          working-directory: "native/lingua_nif"
           command: test
 
       - uses: actions-rs/cargo@v1
         with:
-          working-directory: "native/lingua_nif"
           command: fmt
           args: --all -- --check
 
       - uses: actions-rs/cargo@v1
         with:
-          working-directory: "native/lingua_nif"
           command: clippy
           args: -- -D warnings
