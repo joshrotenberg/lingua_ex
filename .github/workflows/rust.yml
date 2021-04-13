@@ -9,8 +9,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    env:
-      working-directory: native/lingua_nif
+    working-directory: native/lingua_nif
     strategy:
       matrix:
         rust:
