@@ -89,23 +89,15 @@ defmodule Lingua do
         @default_compute_language_confidence_values
       )
 
-    if compute_language_confidence_values,
-      do:
-        Lingua.Nif.compute_language_confidence_values(
-          text,
-          builder_option,
-          languages,
-          minimum_relative_distance,
-          preload_language_models
-        ),
-      else:
-        Lingua.Nif.detect_language_of(
-          text,
-          builder_option,
-          languages,
-          minimum_relative_distance,
-          preload_language_models
-        )
+    Lingua.Nif.run_detection(
+      text,
+      builder_option,
+      languages,
+      compute_language_confidence_values,
+      minimum_relative_distance,
+      preload_language_models
+    )
+
   end
 
   @doc """

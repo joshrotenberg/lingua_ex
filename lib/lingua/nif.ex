@@ -5,19 +5,11 @@ defmodule Lingua.Nif do
 
   def init(), do: error()
 
-  def detect_language_of(
+  def run_detection(
         _text,
         _builder_option,
         _languages,
-        _minimum_relative_distance,
-        _preload_language_models
-      ),
-      do: error()
-
-  def compute_language_confidence_values(
-        _text,
-        _builder_option,
-        _languages,
+        _compute_language_confidence_values,
         _minimum_relative_distance,
         _preload_language_models
       ),

@@ -3,7 +3,7 @@ extern crate rustler;
 
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
-use lingua::{LanguageDetector, LanguageDetectorBuilder};
+use lingua::{LanguageDetectorBuilder};
 use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
 use std::collections::hash_set::HashSet;
 
@@ -22,8 +22,7 @@ rustler::rustler_export_nifs! {
         // language detection
         // http://erlang.org/pipermail/erlang-questions/2018-October/096531.html
         ("init", 0, init, SchedulerFlags::DirtyCpu),
-        ("detect_language_of", 5, detect_language_of, SchedulerFlags::DirtyCpu),
-        ("compute_language_confidence_values",  5, compute_language_confidence_values, SchedulerFlags::DirtyCpu),
+        ("run_detection", 6, run_detection, SchedulerFlags::DirtyCpu),
 
         // language utility functions
         ("all_languages", 0, all_languages),
@@ -50,35 +49,87 @@ fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     Ok((atoms::ok()).encode(env))
 }
 
-fn detect_language_of<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
+fn run_detection<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     let text: String = args[0].decode()?;
+    let option: BuilderOption = args[1].decode()?;
+    let languages = decode_languages(args[2])?;
+    let compute_language_confidence_values: bool = args[3].decode()?;
+    let minimum_relative_distance: f64 = args[4].decode()?;
+    let preload_language_models: bool = args[5].decode()?;
 
-    let detector: LanguageDetector = build_detector(args)?;
+    if languages.len() < 2 && option == BuilderOption::WithLanguages {
+        return Ok((atoms::error(), atoms::insufficient_languages()).encode(env));
+    }
 
-    let detected_language: Option<linguaLanguage> = detector.detect_language_of(text);
+    if minimum_relative_distance < 0.0 || minimum_relative_distance > 0.99 {
+        return Ok((
+            atoms::error(),
+            atoms::out_of_range_minimum_relative_distance(),
+        )
+            .encode(env));
+    }
 
-    match detected_language {
-        Some(language) => Ok((atoms::ok(), Language(language)).encode(env)),
-        None => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+    let mut builder = match option {
+        BuilderOption::AllLanguages => LanguageDetectorBuilder::from_all_languages(),
+        BuilderOption::AllSpokenLanguages => LanguageDetectorBuilder::from_all_spoken_languages(),
+        BuilderOption::AllLanguagesWithArabicScript => {
+            LanguageDetectorBuilder::from_all_languages_with_arabic_script()
+        }
+        BuilderOption::AllLanguagesWithCyrillicScript => {
+            LanguageDetectorBuilder::from_all_languages_with_cyrillic_script()
+        }
+        BuilderOption::AllLanguagesWithDevanagariScript => {
+            LanguageDetectorBuilder::from_all_languages_with_devanagari_script()
+        }
+        BuilderOption::AllLanguagesWithLatinScript => {
+            LanguageDetectorBuilder::from_all_languages_with_latin_script()
+        }
+
+        BuilderOption::WithLanguages => LanguageDetectorBuilder::from_languages(&languages),
+        BuilderOption::WithoutLanguages => {
+            LanguageDetectorBuilder::from_all_languages_without(&languages)
+        }
+    };
+
+    builder.with_minimum_relative_distance(minimum_relative_distance);
+    if preload_language_models {
+        builder.with_preloaded_language_models();
+    }
+
+    let detector = builder.build();
+    if compute_language_confidence_values == true {
+        let confidence_values: Vec<(linguaLanguage, f64)> =
+            detector.compute_language_confidence_values(text);
+        let result: Vec<(Language, f64)> = confidence_values
+            .into_iter()
+            .map(|(language, value)| (Language(language.clone()), value))
+            .collect();
+
+        match result.len() {
+            0 => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+            _ => Ok((atoms::ok(), result).encode(env)),
+        }
+    } else {
+        let detected_language: Option<linguaLanguage> = detector.detect_language_of(text);
+
+        match detected_language {
+            Some(language) => Ok((atoms::ok(), Language(language)).encode(env)),
+            None => Ok((atoms::ok(), atoms::no_match()).encode(env)),
+        }
     }
 }
 
-fn compute_language_confidence_values<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let text: String = args[0].decode()?;
+fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<linguaLanguage>> {
+    let language_types: Vec<LanguageType> = arg.decode()?;
 
-    let detector: LanguageDetector = build_detector(args)?;
-
-    let confidence_values: Vec<(linguaLanguage, f64)> =
-        detector.compute_language_confidence_values(text);
-    let result: Vec<(Language, f64)> = confidence_values
+    Ok(language_types
         .into_iter()
-        .map(|(language, value)| (Language(language.clone()), value))
-        .collect();
-
-    match result.len() {
-        0 => Ok((atoms::ok(), atoms::no_match()).encode(env)),
-        _ => Ok((atoms::ok(), result).encode(env)),
-    }
+        .map(|language_type| match language_type {
+            LanguageType::IsoCode639_1(l) => linguaLanguage::from_iso_code_639_1(&*l),
+            LanguageType::IsoCode639_3(l) => linguaLanguage::from_iso_code_639_3(&*l),
+            LanguageType::Language(l) => l.clone(),
+        })
+        .collect())
 }
 
 // language utility functions
@@ -174,53 +225,4 @@ fn all<'a>(env: Env<'a>, f: fn() -> HashSet<linguaLanguage>) -> NifResult<Term<'
         .collect::<Vec<Language>>();
     languages.sort_by(|a, b| a.cmp(b));
     Ok((languages).encode(env))
-}
-
-fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<linguaLanguage>> {
-    let language_types: Vec<LanguageType> = arg.decode()?;
-
-    Ok(language_types
-        .into_iter()
-        .map(|language_type| match language_type {
-            LanguageType::IsoCode639_1(l) => linguaLanguage::from_iso_code_639_1(&*l),
-            LanguageType::IsoCode639_3(l) => linguaLanguage::from_iso_code_639_3(&*l),
-            LanguageType::Language(l) => l.clone(),
-        })
-        .collect())
-}
-
-fn build_detector<'a>(args: &[Term<'a>]) -> NifResult<lingua::LanguageDetector> {
-    let option: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let minimum_relative_distance: f64 = args[3].decode()?;
-    let preload_language_models: bool = args[4].decode()?;
-
-    let mut builder = match option {
-        BuilderOption::AllLanguages => LanguageDetectorBuilder::from_all_languages(),
-        BuilderOption::AllSpokenLanguages => LanguageDetectorBuilder::from_all_spoken_languages(),
-        BuilderOption::AllLanguagesWithArabicScript => {
-            LanguageDetectorBuilder::from_all_languages_with_arabic_script()
-        }
-        BuilderOption::AllLanguagesWithCyrillicScript => {
-            LanguageDetectorBuilder::from_all_languages_with_cyrillic_script()
-        }
-        BuilderOption::AllLanguagesWithDevanagariScript => {
-            LanguageDetectorBuilder::from_all_languages_with_devanagari_script()
-        }
-        BuilderOption::AllLanguagesWithLatinScript => {
-            LanguageDetectorBuilder::from_all_languages_with_latin_script()
-        }
-
-        BuilderOption::WithLanguages => LanguageDetectorBuilder::from_languages(&languages),
-        BuilderOption::WithoutLanguages => {
-            LanguageDetectorBuilder::from_all_languages_without(&languages)
-        }
-    };
-
-    builder.with_minimum_relative_distance(minimum_relative_distance);
-    if preload_language_models {
-        builder.with_preloaded_language_models();
-    }
-
-    Ok(builder.build())
 }
