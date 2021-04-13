@@ -6,10 +6,12 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  working-directory: native/lingua_nif
+
 jobs:
   ci:
     runs-on: ubuntu-latest
-    working-directory: native/lingua_nif
     strategy:
       matrix:
         rust:
@@ -24,6 +26,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
+          working-directory: ${{env.working-directory}}
           toolchain: ${{ matrix.rust }}
           override: true
           components: rustfmt, clippy
@@ -31,17 +34,21 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
+          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
         with:
           command: test
+          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
+          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: -- -D warnings
+          working-directory: ${{env.working-directory}}
