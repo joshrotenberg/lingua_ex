@@ -254,4 +254,5 @@ rustler_atoms! {
     atom unrecognized_language;
     atom unrecognized_iso_code;
     atom out_of_range_minimum_relative_distance;
+    atom insufficient_languages;
 }
