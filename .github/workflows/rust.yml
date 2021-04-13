@@ -24,31 +24,31 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
+        working-directory: ${{env.working-directory}}
         with:
           profile: minimal
-          working-directory: ${{env.working-directory}}
           toolchain: ${{ matrix.rust }}
           override: true
           components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
+        working-directory: ${{env.working-directory}}
         with:
           command: build
-          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
+        working-directory: ${{env.working-directory}}
         with:
           command: test
-          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
+        working-directory: ${{env.working-directory}}
         with:
           command: fmt
           args: --all -- --check
-          working-directory: ${{env.working-directory}}
 
       - uses: actions-rs/cargo@v1
+        working-directory: ${{env.working-directory}}
         with:
           command: clippy
           args: -- -D warnings
-          working-directory: ${{env.working-directory}}
