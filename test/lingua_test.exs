@@ -170,6 +170,25 @@ defmodule LinguaTest do
           compute_language_confidence_values: true
         )
       end
+
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:eng]
+             ) ==
+               {:error, :insufficient_languages}
+
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:eng, :rus],
+               minimum_relative_distance: 1.1
+             ) ==
+               {:error, :out_of_range_minimum_relative_distance}
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:eng, :rus],
+               minimum_relative_distance: -0.1
+             ) ==
+               {:error, :out_of_range_minimum_relative_distance}
     end
   end
 end
