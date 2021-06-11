@@ -11,5 +11,5 @@ path = "src/lib.rs"
 
 [dependencies]
 lazy_static = "1.4"
-lingua = "1.2.1"
+lingua = "1.2.2"
 rustler = "0.21.1"
