@@ -131,21 +131,21 @@ defmodule LinguaTest do
                languages: [:english, :russian, :hebrew],
                compute_language_confidence_values: true
              ) ==
-               {:ok, [english: 1.0]}
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
       assert Lingua.detect("what in the world is this",
                builder_option: :with_languages,
                languages: [:en, :ru, :he],
                compute_language_confidence_values: true
              ) ==
-               {:ok, [english: 1.0]}
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
       assert Lingua.detect("what in the world is this",
                builder_option: :with_languages,
                languages: [:eng, :rus, :heb],
                compute_language_confidence_values: true
              ) ==
-               {:ok, [english: 1.0]}
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
       assert Lingua.detect("what in the world is this",
                builder_option: :with_languages,
@@ -153,7 +153,7 @@ defmodule LinguaTest do
                compute_language_confidence_values: true,
                preload_language_models: true
              ) ==
-               {:ok, [english: 1.0]}
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
       assert Lingua.detect("what in the world is this",
                builder_option: :with_languages,
@@ -161,7 +161,7 @@ defmodule LinguaTest do
                compute_language_confidence_values: true,
                preload_language_models: false
              ) ==
-               {:ok, [english: 1.0]}
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
       assert_raise ArgumentError, fn ->
         Lingua.detect("what in the world is this",

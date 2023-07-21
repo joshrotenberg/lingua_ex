@@ -4,7 +4,7 @@ extern crate rustler;
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
 use lingua::{LanguageDetectorBuilder};
-use rustler::{Encoder, Env, NifResult, SchedulerFlags, Term};
+use rustler::{Encoder, Env, NifResult, Term};
 use std::collections::hash_set::HashSet;
 
 use crate::wrapper::iso_639_1::IsoCode639_1;
@@ -16,32 +16,32 @@ mod atoms;
 mod builder;
 mod wrapper;
 
-rustler::rustler_export_nifs! {
+rustler::init! {
     "Elixir.Lingua.Nif",
     [
         // language detection
         // http://erlang.org/pipermail/erlang-questions/2018-October/096531.html
-        ("init", 0, init, SchedulerFlags::DirtyCpu),
-        ("run_detection", 6, run_detection, SchedulerFlags::DirtyCpu),
+        init,
+        run_detection,
 
         // language utility functions
-        ("all_languages", 0, all_languages),
-        ("all_spoken_languages", 0, all_spoken_languages),
-        ("all_languages_with_arabic_script", 0, all_languages_with_arabic_script),
-        ("all_languages_with_cyrillic_script", 0, all_languages_with_cyrillic_script),
-        ("all_languages_with_devanagari_script", 0, all_languages_with_devanagari_script),
-        ("all_languages_with_latin_script", 0, all_languages_with_latin_script),
-        ("language_for_iso_code", 1, language_for_iso_code),
-        ("language_for_iso_code_639_1", 1, language_for_iso_code_639_1),
-        ("language_for_iso_code_639_3", 1, language_for_iso_code_639_3),
-        ("iso_code_639_1_for_language", 1, iso_code_639_1_for_language),
-        ("iso_code_639_3_for_language", 1, iso_code_639_3_for_language),
-    ],
-    None
+        all_languages,
+        all_spoken_languages,
+        all_languages_with_arabic_script,
+        all_languages_with_cyrillic_script,
+        all_languages_with_devanagari_script,
+        all_languages_with_latin_script,
+        language_for_iso_code,
+        language_for_iso_code_639_1,
+        language_for_iso_code_639_3,
+        iso_code_639_1_for_language,
+        iso_code_639_3_for_language,
+    ]
 }
 
 // language detection
-fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif(schedule = "DirtyCpu")]
+fn init<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     LanguageDetectorBuilder::from_all_languages()
         .with_preloaded_language_models()
         .build();
@@ -49,13 +49,17 @@ fn init<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
     Ok((atoms::ok()).encode(env))
 }
 
-fn run_detection<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    let text: String = args[0].decode()?;
-    let option: BuilderOption = args[1].decode()?;
-    let languages = decode_languages(args[2])?;
-    let compute_language_confidence_values: bool = args[3].decode()?;
-    let minimum_relative_distance: f64 = args[4].decode()?;
-    let preload_language_models: bool = args[5].decode()?;
+#[rustler::nif(schedule = "DirtyCpu")]
+fn run_detection<'a>(
+    env: Env<'a>,
+    text: String,
+    option: BuilderOption,
+    language_types: Vec<LanguageType>,
+    compute_language_confidence_values: bool,
+    minimum_relative_distance: f64,
+    preload_language_models: bool
+) -> NifResult<Term<'a>> {
+    let languages = decode_languages(language_types);
 
     if languages.len() < 2 && option == BuilderOption::WithLanguages {
         return Ok((atoms::error(), atoms::insufficient_languages()).encode(env));
@@ -119,49 +123,51 @@ fn run_detection<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
     }
 }
 
-fn decode_languages<'a>(arg: Term<'a>) -> NifResult<Vec<linguaLanguage>> {
-    let language_types: Vec<LanguageType> = arg.decode()?;
-
-    Ok(language_types
+fn decode_languages(language_types: Vec<LanguageType>) -> Vec<linguaLanguage> {
+    language_types
         .into_iter()
         .map(|language_type| match language_type {
             LanguageType::IsoCode639_1(l) => linguaLanguage::from_iso_code_639_1(&*l),
             LanguageType::IsoCode639_3(l) => linguaLanguage::from_iso_code_639_3(&*l),
             LanguageType::Language(l) => l.clone(),
         })
-        .collect())
+        .collect()
 }
 
 // language utility functions
-fn all_languages<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_languages<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all)
 }
 
-fn all_spoken_languages<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_spoken_languages<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_spoken_ones)
 }
 
-fn all_languages_with_arabic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_languages_with_arabic_script<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_arabic_script)
 }
 
-fn all_languages_with_cyrillic_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_languages_with_cyrillic_script<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_cyrillic_script)
 }
 
-fn all_languages_with_devanagari_script<'a>(
-    env: Env<'a>,
-    _args: &[Term<'a>],
-) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_languages_with_devanagari_script<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_devanagari_script)
 }
 
-fn all_languages_with_latin_script<'a>(env: Env<'a>, _args: &[Term<'a>]) -> NifResult<Term<'a>> {
+#[rustler::nif]
+fn all_languages_with_latin_script<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all_with_latin_script)
 }
 
-fn language_for_iso_code<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    match args[0].decode() {
+#[rustler::nif]
+fn language_for_iso_code<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResult<Term<'a>> {
+    match iso_code.decode() {
         Ok(LanguageType::IsoCode639_1(code)) => Ok((
             atoms::ok(),
             Language(linguaLanguage::from_iso_code_639_1(&*code)),
@@ -176,8 +182,9 @@ fn language_for_iso_code<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<
     }
 }
 
-fn language_for_iso_code_639_1<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    match args[0].decode() {
+#[rustler::nif]
+fn language_for_iso_code_639_1<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResult<Term<'a>> {
+    match iso_code.decode() {
         Ok(LanguageType::IsoCode639_1(code)) => Ok((
             atoms::ok(),
             Language(linguaLanguage::from_iso_code_639_1(&*code)),
@@ -187,8 +194,9 @@ fn language_for_iso_code_639_1<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult
     }
 }
 
-fn language_for_iso_code_639_3<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    match args[0].decode() {
+#[rustler::nif]
+fn language_for_iso_code_639_3<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResult<Term<'a>> {
+    match iso_code.decode() {
         Ok(LanguageType::IsoCode639_3(code)) => Ok((
             atoms::ok(),
             Language(linguaLanguage::from_iso_code_639_3(&*code)),
@@ -198,8 +206,9 @@ fn language_for_iso_code_639_3<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult
     }
 }
 
-fn iso_code_639_1_for_language<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    match args[0].decode() {
+#[rustler::nif]
+fn iso_code_639_1_for_language<'a>(env: Env<'a>, language: Term<'a>) -> NifResult<Term<'a>> {
+    match language.decode() {
         Ok(Language(language)) => {
             let code = language.iso_code_639_1();
             Ok((atoms::ok(), IsoCode639_1(code)).encode(env))
@@ -208,8 +217,9 @@ fn iso_code_639_1_for_language<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult
     }
 }
 
-fn iso_code_639_3_for_language<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
-    match args[0].decode() {
+#[rustler::nif]
+fn iso_code_639_3_for_language<'a>(env: Env<'a>, language: Term<'a>) -> NifResult<Term<'a>> {
+    match language.decode() {
         Ok(Language(language)) => {
             let code = language.iso_code_639_3();
             Ok((atoms::ok(), IsoCode639_3(code)).encode(env))

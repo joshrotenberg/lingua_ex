@@ -1,258 +1,258 @@
-rustler_atoms! {
-    atom ok;
-    atom error;
+atoms! {
+    ok,
+    error,
     //atom __true__ = "true";
     //atom __false__ = "false";
 
     // languages
-    atom afrikaans;
-    atom albanian;
-    atom arabic;
-    atom armenian;
-    atom azerbaijani;
-    atom basque;
-    atom belarusian;
-    atom bengali;
-    atom bokmal;
-    atom bosnian;
-    atom bulgarian;
-    atom catalan;
-    atom chinese;
-    atom croatian;
-    atom czech;
-    atom danish;
-    atom dutch;
-    atom english;
-    atom esperanto;
-    atom estonian;
-    atom finnish;
-    atom french;
-    atom ganda;
-    atom georgian;
-    atom german;
-    atom greek;
-    atom gujarati;
-    atom hebrew;
-    atom hindi;
-    atom hungarian;
-    atom icelandic;
-    atom indonesian;
-    atom irish;
-    atom italian;
-    atom japanese;
-    atom kazakh;
-    atom korean;
-    atom latin;
-    atom latvian;
-    atom lithuanian;
-    atom macedonian;
-    atom malay;
-    atom maori;
-    atom marathi;
-    atom mongolian;
-    atom nynorsk;
-    atom persian;
-    atom polish;
-    atom portuguese;
-    atom punjabi;
-    atom romanian;
-    atom russian;
-    atom serbian;
-    atom shona;
-    atom slovak;
-    atom slovene;
-    atom somali;
-    atom sotho;
-    atom spanish;
-    atom swahili;
-    atom swedish;
-    atom tagalog;
-    atom tamil;
-    atom telugu;
-    atom thai;
-    atom tsonga;
-    atom tswana;
-    atom turkish;
-    atom ukrainian;
-    atom urdu;
-    atom vietnamese;
-    atom welsh;
-    atom xhosa;
-    atom yoruba;
-    atom zulu;
+    afrikaans,
+    albanian,
+    arabic,
+    armenian,
+    azerbaijani,
+    basque,
+    belarusian,
+    bengali,
+    bokmal,
+    bosnian,
+    bulgarian,
+    catalan,
+    chinese,
+    croatian,
+    czech,
+    danish,
+    dutch,
+    english,
+    esperanto,
+    estonian,
+    finnish,
+    french,
+    ganda,
+    georgian,
+    german,
+    greek,
+    gujarati,
+    hebrew,
+    hindi,
+    hungarian,
+    icelandic,
+    indonesian,
+    irish,
+    italian,
+    japanese,
+    kazakh,
+    korean,
+    latin,
+    latvian,
+    lithuanian,
+    macedonian,
+    malay,
+    maori,
+    marathi,
+    mongolian,
+    nynorsk,
+    persian,
+    polish,
+    portuguese,
+    punjabi,
+    romanian,
+    russian,
+    serbian,
+    shona,
+    slovak,
+    slovene,
+    somali,
+    sotho,
+    spanish,
+    swahili,
+    swedish,
+    tagalog,
+    tamil,
+    telugu,
+    thai,
+    tsonga,
+    tswana,
+    turkish,
+    ukrainian,
+    urdu,
+    vietnamese,
+    welsh,
+    xhosa,
+    yoruba,
+    zulu,
 
     // iso code 639_1
-    atom af;
-    atom sq;
-    atom ar;
-    atom hy;
-    atom az;
-    atom eu;
-    atom be;
-    atom bn;
-    atom nb;
-    atom bs;
-    atom bg;
-    atom ca;
-    atom zh;
-    atom hr;
-    atom cs;
-    atom da;
-    atom nl;
-    atom en;
-    atom eo;
-    atom et;
-    atom fi;
-    atom fr;
-    atom lg;
-    atom ka;
-    atom de;
-    atom el;
-    atom gu;
-    atom he;
-    atom hi;
-    atom hu;
-    atom is;
-    atom id;
-    atom ga;
-    atom it;
-    atom ja;
-    atom kk;
-    atom ko;
-    atom la;
-    atom lv;
-    atom lt;
-    atom mk;
-    atom ms;
-    atom mi;
-    atom mr;
-    atom mn;
-    atom nn;
-    atom fa;
-    atom pl;
-    atom pt;
-    atom pa;
-    atom ro;
-    atom ru;
-    atom sr;
-    atom sn;
-    atom sk;
-    atom sl;
-    atom so;
-    atom st;
-    atom es;
-    atom sw;
-    atom sv;
-    atom tl;
-    atom ta;
-    atom te;
-    atom th;
-    atom ts;
-    atom tn;
-    atom tr;
-    atom uk;
-    atom ur;
-    atom vi;
-    atom cy;
-    atom xh;
-    atom yo;
-    atom zu;
+    af,
+    sq,
+    ar,
+    hy,
+    az,
+    eu,
+    be,
+    bn,
+    nb,
+    bs,
+    bg,
+    ca,
+    zh,
+    hr,
+    cs,
+    da,
+    nl,
+    en,
+    eo,
+    et,
+    fi,
+    fr,
+    lg,
+    ka,
+    de,
+    el,
+    gu,
+    he,
+    hi,
+    hu,
+    is,
+    id,
+    ga,
+    it,
+    ja,
+    kk,
+    ko,
+    la,
+    lv,
+    lt,
+    mk,
+    ms,
+    mi,
+    mr,
+    mn,
+    nn,
+    fa,
+    pl,
+    pt,
+    pa,
+    ro,
+    ru,
+    sr,
+    sn,
+    sk,
+    sl,
+    so,
+    st,
+    es,
+    sw,
+    sv,
+    tl,
+    ta,
+    te,
+    th,
+    ts,
+    tn,
+    tr,
+    uk,
+    ur,
+    vi,
+    cy,
+    xh,
+    yo,
+    zu,
 
     // iso 639_3
-    atom afr;
-    atom sqi;
-    atom ara;
-    atom hye;
-    atom aze;
-    atom eus;
-    atom bel;
-    atom ben;
-    atom nob;
-    atom bos;
-    atom bul;
-    atom cat;
-    atom zho;
-    atom hrv;
-    atom ces;
-    atom dan;
-    atom nld;
-    atom eng;
-    atom epo;
-    atom est;
-    atom fin;
-    atom fra;
-    atom lug;
-    atom kat;
-    atom deu;
-    atom ell;
-    atom guj;
-    atom heb;
-    atom hin;
-    atom hun;
-    atom isl;
-    atom ind;
-    atom gle;
-    atom ita;
-    atom jpn;
-    atom kaz;
-    atom kor;
-    atom lat;
-    atom lav;
-    atom lit;
-    atom mkd;
-    atom msa;
-    atom mri;
-    atom mar;
-    atom mon;
-    atom nno;
-    atom fas;
-    atom pol;
-    atom por;
-    atom pan;
-    atom ron;
-    atom rus;
-    atom srp;
-    atom sna;
-    atom slk;
-    atom slv;
-    atom som;
-    atom sot;
-    atom spa;
-    atom swa;
-    atom swe;
-    atom tgl;
-    atom tam;
-    atom tel;
-    atom tha;
-    atom tso;
-    atom tsn;
-    atom tur;
-    atom ukr;
-    atom urd;
-    atom vie;
-    atom cym;
-    atom xho;
-    atom yor;
-    atom zul;
+    afr,
+    sqi,
+    ara,
+    hye,
+    aze,
+    eus,
+    bel,
+    ben,
+    nob,
+    bos,
+    bul,
+    cat,
+    zho,
+    hrv,
+    ces,
+    dan,
+    nld,
+    eng,
+    epo,
+    est,
+    fin,
+    fra,
+    lug,
+    kat,
+    deu,
+    ell,
+    guj,
+    heb,
+    hin,
+    hun,
+    isl,
+    ind,
+    gle,
+    ita,
+    jpn,
+    kaz,
+    kor,
+    lat,
+    lav,
+    lit,
+    mkd,
+    msa,
+    mri,
+    mar,
+    mon,
+    nno,
+    fas,
+    pol,
+    por,
+    pan,
+    ron,
+    rus,
+    srp,
+    sna,
+    slk,
+    slv,
+    som,
+    sot,
+    spa,
+    swa,
+    swe,
+    tgl,
+    tam,
+    tel,
+    tha,
+    tso,
+    tsn,
+    tur,
+    ukr,
+    urd,
+    vie,
+    cym,
+    xho,
+    yor,
+    zul,
 
     // builder options
-    atom all_languages;
-    atom all_spoken_languages;
-    atom all_languages_with_arabic_script;
-    atom all_languages_with_cyrillic_script;
-    atom all_languages_with_devanagari_script;
-    atom all_languages_with_latin_script;
+    all_languages,
+    all_spoken_languages,
+    all_languages_with_arabic_script,
+    all_languages_with_cyrillic_script,
+    all_languages_with_devanagari_script,
+    all_languages_with_latin_script,
 
-    atom with_languages;
-    atom with_iso_codes_639_1;
-    atom with_iso_codes_639_3;
-    atom without_languages;
+    with_languages,
+    with_iso_codes_639_1,
+    with_iso_codes_639_3,
+    without_languages,
 
     // errors
-    atom no_match;
-    atom unrecognized_builder_option;
-    atom unrecognized_language;
-    atom unrecognized_iso_code;
-    atom out_of_range_minimum_relative_distance;
-    atom insufficient_languages;
+    no_match,
+    unrecognized_builder_option,
+    unrecognized_language,
+    unrecognized_iso_code,
+    out_of_range_minimum_relative_distance,
+    insufficient_languages,
 }
