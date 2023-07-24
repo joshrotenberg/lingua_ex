@@ -57,7 +57,8 @@ fn run_detection<'a>(
     language_types: Vec<LanguageType>,
     compute_language_confidence_values: bool,
     minimum_relative_distance: f64,
-    preload_language_models: bool
+    preload_language_models: bool,
+    low_accuracy_mode: bool
 ) -> NifResult<Term<'a>> {
     let languages = decode_languages(language_types);
 
@@ -98,6 +99,9 @@ fn run_detection<'a>(
     builder.with_minimum_relative_distance(minimum_relative_distance);
     if preload_language_models {
         builder.with_preloaded_language_models();
+    }
+    if low_accuracy_mode {
+        builder.with_low_accuracy_mode();
     }
 
     let detector = builder.build();

@@ -163,6 +163,15 @@ defmodule LinguaTest do
              ) ==
                {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
+      assert Lingua.detect("what in the world is this",
+               builder_option: :with_languages,
+               languages: [:eng, :rus, :heb],
+               compute_language_confidence_values: true,
+               preload_language_models: false,
+               low_accuracy_mode: true
+             ) ==
+               {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
+
       assert_raise ArgumentError, fn ->
         Lingua.detect("what in the world is this",
           builder_option: :with_languages,
@@ -183,6 +192,7 @@ defmodule LinguaTest do
                minimum_relative_distance: 1.1
              ) ==
                {:error, :out_of_range_minimum_relative_distance}
+
       assert Lingua.detect("what in the world is this",
                builder_option: :with_languages,
                languages: [:eng, :rus],
