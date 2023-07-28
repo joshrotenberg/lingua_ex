@@ -11,7 +11,8 @@ defmodule Lingua.Nif do
         _languages,
         _compute_language_confidence_values,
         _minimum_relative_distance,
-        _preload_language_models
+        _preload_language_models,
+        _low_accuracy_mode
       ),
       do: error()
 

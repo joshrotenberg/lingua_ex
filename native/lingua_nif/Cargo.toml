@@ -1,6 +1,6 @@
 [package]
 authors = []
-edition = "2018"
+edition = "2021"
 name = "lingua_nif"
 version = "0.1.0"
 
@@ -10,6 +10,5 @@ name = "lingua_nif"
 path = "src/lib.rs"
 
 [dependencies]
-lazy_static = "1.4"
-lingua = "1.2.2"
-rustler = "0.21.1"
+lingua = "1.5.0"
+rustler = "0.29.1"

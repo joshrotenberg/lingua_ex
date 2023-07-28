@@ -9,6 +9,7 @@ defmodule Lingua do
   @default_minimum_relative_distance 0.0
   @default_compute_language_confidence_values false
   @default_preload_language_models false
+  @default_low_accuracy_mode false
 
   @doc """
   Initialize the detector. Calling this is optional but it may come in handy in cases where you want lingua-rs to load
@@ -69,7 +70,7 @@ defmodule Lingua do
       {:ok, :no_match}
 
       iex> Lingua.detect("what in the world is this", builder_option: :with_languages, languages: [:english, :russian, :hebrew], compute_language_confidence_values: true)
-      {:ok, [english: 1.0]}
+      {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
   """
   def detect(text, options \\ []) do
@@ -89,15 +90,17 @@ defmodule Lingua do
         @default_compute_language_confidence_values
       )
 
+    low_acuracy_mode = Keyword.get(options, :low_acuracy_mode, @default_low_accuracy_mode)
+
     Lingua.Nif.run_detection(
       text,
       builder_option,
       languages,
       compute_language_confidence_values,
       minimum_relative_distance,
-      preload_language_models
+      preload_language_models,
+      low_acuracy_mode
     )
-
   end
 
   @doc """
