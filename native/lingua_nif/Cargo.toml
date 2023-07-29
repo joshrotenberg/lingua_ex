@@ -5,7 +5,7 @@ name = "lingua_nif"
 version = "0.1.0"
 
 [lib]
-crate-type = ["dylib"]
+crate-type = ["cdylib"]
 name = "lingua_nif"
 path = "src/lib.rs"
 
