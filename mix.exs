@@ -1,11 +1,16 @@
 defmodule Lingua.MixProject do
   use Mix.Project
 
+  @version "0.2.0"
+
   def project do
     [
       app: :lingua,
-      version: "0.1.3",
-      elixir: "~> 1.10",
+      version: @version,
+      # rustler aims to support the three latest Elixir and Erlang versions
+      # so with Elixir 1.15 this is 1.13, 1.14, and 1.15
+      # + Erlang/OTP 26, 25 and 24
+      elixir: "~> 1.13",
       start_permanent: Mix.env() == :prod,
       description: description(),
       test_coverage: [tool: ExCoveralls],
@@ -30,7 +35,8 @@ defmodule Lingua.MixProject do
         "README.md",
         "LICENSE",
         "native/lingua_nif/Cargo.*",
-        "native/lingua_nif/src"
+        "native/lingua_nif/src",
+        "checksum-*.exs"
       ]
     ]
   end
@@ -43,9 +49,10 @@ defmodule Lingua.MixProject do
 
   defp deps do
     [
-      {:rustler, "~> 0.29.1"},
-      {:credo, "~> 1.5.5", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.14.0", only: :test},
+      {:rustler_precompiled, "~> 0.6.2"},
+      {:rustler, "~> 0.29.1", optional: true},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.16", only: :test},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false}
     ]
   end
