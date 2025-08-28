@@ -11,4 +11,5 @@ path = "src/lib.rs"
 
 [dependencies]
 lingua = "1.5.0"
-rustler = "0.29.1"
+rustler = "0.36"
+ 
