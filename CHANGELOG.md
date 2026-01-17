@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.4](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.3...v0.3.4) (2026-01-17)
+
+
+### Bug Fixes
+
+* pass tag to precompile and hex-publish workflows ([1774f7f](https://github.com/joshrotenberg/lingua_ex/commit/1774f7f8d67c6acfbcde4c7f93ee1ce01346734b))
+
 ## [0.3.3](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.2...v0.3.3) (2026-01-17)
 
 
