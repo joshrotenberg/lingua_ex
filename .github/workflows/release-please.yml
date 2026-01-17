@@ -21,3 +21,16 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  precompile:
+    name: Build precompiled NIFs
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/precompile.yml
+
+  hex-publish:
+    name: Publish to Hex.pm
+    needs: [release-please, precompile]
+    if: ${{ needs.release-please.outputs.release_created }}
+    uses: ./.github/workflows/hex-publish.yml
+    secrets: inherit
