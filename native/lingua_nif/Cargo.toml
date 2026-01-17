@@ -9,6 +9,12 @@ crate-type = ["cdylib"]
 name = "lingua_nif"
 path = "src/lib.rs"
 
+[features]
+default = []
+nif_version_2_15 = ["rustler/nif_version_2_15"]
+nif_version_2_16 = ["rustler/nif_version_2_16"]
+nif_version_2_17 = ["rustler/nif_version_2_17"]
+
 [dependencies]
 lingua = "1.7.2"
 rustler = "0.37.2"
