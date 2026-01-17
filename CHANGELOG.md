@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.5](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.4...v0.3.5) (2026-01-17)
+
+
+### Bug Fixes
+
+* install Rust for checksum generation in hex-publish ([23e87c0](https://github.com/joshrotenberg/lingua_ex/commit/23e87c08d220e2bd71d98d5c5b7b29263b1df3ee))
+
 ## [0.3.4](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.3...v0.3.4) (2026-01-17)
 
 
