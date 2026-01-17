@@ -86,6 +86,8 @@ impl<'a> Decoder<'a> for Language {
             Ok(Language(lingua::Language::Latin))
         } else if atoms::latvian() == term {
             Ok(Language(lingua::Language::Latvian))
+        } else if atoms::lithuanian() == term {
+            Ok(Language(lingua::Language::Lithuanian))
         } else if atoms::macedonian() == term {
             Ok(Language(lingua::Language::Macedonian))
         } else if atoms::malay() == term {

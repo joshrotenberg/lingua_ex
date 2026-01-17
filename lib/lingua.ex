@@ -52,6 +52,8 @@ defmodule Lingua do
 
   * `preload_language_models:` - preload all language models instead of just those required for the match. (defaults to `false`)
 
+  * `low_accuracy_mode:` - use low accuracy mode for faster detection at the cost of accuracy. (defaults to `false`)
+
   ## Examples
 
       iex> Lingua.detect("this is definitely English")
@@ -90,7 +92,7 @@ defmodule Lingua do
         @default_compute_language_confidence_values
       )
 
-    low_acuracy_mode = Keyword.get(options, :low_acuracy_mode, @default_low_accuracy_mode)
+    low_accuracy_mode = Keyword.get(options, :low_accuracy_mode, @default_low_accuracy_mode)
 
     Lingua.Nif.run_detection(
       text,
@@ -99,7 +101,7 @@ defmodule Lingua do
       compute_language_confidence_values,
       minimum_relative_distance,
       preload_language_models,
-      low_acuracy_mode
+      low_accuracy_mode
     )
   end
 

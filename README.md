@@ -41,7 +41,7 @@ The package can be installed by adding `lingua` to your list of dependencies in 
 ```elixir
 def deps do
   [
-    {:lingua, "~> 0.1.0"}
+    {:lingua, "~> 0.2.0"}
   ]
 end
 ```
