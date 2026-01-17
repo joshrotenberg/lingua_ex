@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.1...v0.3.2) (2026-01-17)
+
+
+### Bug Fixes
+
+* add NIF version features to Cargo.toml for precompilation ([2e443e6](https://github.com/joshrotenberg/lingua_ex/commit/2e443e6ae983df0c547c7d3c52f8a979b473e7d6))
+
 ## [0.3.1](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.0...v0.3.1) (2026-01-17)
 
 
