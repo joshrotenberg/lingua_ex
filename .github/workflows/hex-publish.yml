@@ -35,8 +35,14 @@ jobs:
           mix local.hex --force
           mix deps.get
 
+      - name: Install Rust (for local compilation during checksum generation)
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Generate checksums
-        run: mix rustler_precompiled.download Lingua.Nif --all --print
+        run: |
+          mix rustler_precompiled.download Lingua.Nif --all --print
+        env:
+          LINGUA_BUILD: "true"
 
       - name: Publish to Hex
         run: mix hex.publish --yes
