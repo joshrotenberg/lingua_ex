@@ -1,8 +1,48 @@
 defmodule Lingua do
   @moduledoc """
-  Lingua wraps [Peter M. Stahl](https://github.com/pemistahl)'s [linuga-rs](https://github.com/pemistahl/lingua-rs) language detection library.
+  Lingua wraps [Peter M. Stahl](https://github.com/pemistahl)'s [lingua-rs](https://github.com/pemistahl/lingua-rs) language detection library.
   This wrapper follows the lingua-rs API closely, so consult the [documentation](https://docs.rs/lingua/1.0.3/lingua/index.html) for more information.
   """
+
+  @typedoc "A supported language atom (e.g., `:english`, `:spanish`, `:hebrew`)"
+  @type language :: atom()
+
+  @typedoc "ISO 639-1 two-letter language code (e.g., `:en`, `:es`, `:he`)"
+  @type iso_639_1 :: atom()
+
+  @typedoc "ISO 639-3 three-letter language code (e.g., `:eng`, `:spa`, `:heb`)"
+  @type iso_639_3 :: atom()
+
+  @typedoc "Language identifier - can be a language name, ISO 639-1, or ISO 639-3 code"
+  @type language_identifier :: language() | iso_639_1() | iso_639_3()
+
+  @typedoc "Builder option for configuring language detection"
+  @type builder_option ::
+          :all_languages
+          | :all_spoken_languages
+          | :all_languages_with_arabic_script
+          | :all_languages_with_cyrillic_script
+          | :all_languages_with_devanagari_script
+          | :all_languages_with_latin_script
+          | :with_languages
+          | :without_languages
+
+  @typedoc "Detection options"
+  @type detect_option ::
+          {:builder_option, builder_option()}
+          | {:languages, [language_identifier()]}
+          | {:minimum_relative_distance, float()}
+          | {:compute_language_confidence_values, boolean()}
+          | {:preload_language_models, boolean()}
+          | {:low_accuracy_mode, boolean()}
+
+  @typedoc "Confidence value tuple with language and confidence score"
+  @type confidence_value :: {language(), float()}
+
+  @typedoc "Detection result"
+  @type detect_result ::
+          {:ok, language() | :no_match | [confidence_value()]}
+          | {:error, :insufficient_languages | :out_of_range_minimum_relative_distance}
 
   @default_builder_option :all_languages
   @default_languages []
@@ -21,6 +61,7 @@ defmodule Lingua do
       iex> Lingua.init()
       :ok
   """
+  @spec init() :: :ok
   defdelegate init(), to: Lingua.Nif
 
   @doc """
@@ -30,7 +71,7 @@ defmodule Lingua do
   Returns the detected language, or a list of languages and their confidence values, or `:no_match` if the given text
   doesn't match a language.
 
-  Options:
+  ## Options
 
   * `builder_option:` - can be one of the following (defaults to `:all_languages`):
     * `:all_languages` - consider every supported language
@@ -39,20 +80,29 @@ defmodule Lingua do
     * `:all_languages_with_cyrillic_script` - consider only languages written in Cyrillic script
     * `:all_languages_with_devanagari_script` - consider only languages written in Devanagari script
     * `:all_languages_with_latin_script` - consider only languages written in Latin script
-    * `:with_languages` - consider only the languages supplied in the `languages` option.
-    * `:without_languages` - consider all languages except those supplied in the `languages` option. Two or more are required. (see below)
+    * `:with_languages` - consider only the languages supplied in the `languages` option
+    * `:without_languages` - consider all languages except those supplied in the `languages` option
 
-  * `languages:` - specify two or more languages to consider or to not consider depending on the `builder_option:` (defaults to `[]`). Accepts
-  any combination of languages and ISO 639-1 or 639-3 codes, for example: `[:english, :ru, :lit]` to consider English, Russian and Lithuanian.
+  * `languages:` - specify two or more languages to consider or exclude depending on `builder_option:` (defaults to `[]`).
+    Accepts any combination of language names, ISO 639-1 codes (2-letter), or ISO 639-3 codes (3-letter).
+    For example: `[:english, :ru, :heb]` mixes the language name with ISO 639-1 and ISO 639-3 codes.
 
   * `minimum_relative_distance:` - specify the minimum relative distance (0.0 - 0.99) required for a language to be considered a match for the input.
-  See the lingua-rs [documentation](https://docs.rs/lingua/1.0.3/lingua/struct.LanguageDetectorBuilder.html#method.with_minimum_relative_distance) for details. (defaults to `0.0`)
+    See the lingua-rs [documentation](https://docs.rs/lingua/1.0.3/lingua/struct.LanguageDetectorBuilder.html#method.with_minimum_relative_distance) for details. (defaults to `0.0`)
 
   * `compute_language_confidence_values:` - returns the full list of language matches for the input and their confidence values. (defaults to `false`)
 
   * `preload_language_models:` - preload all language models instead of just those required for the match. (defaults to `false`)
 
   * `low_accuracy_mode:` - use low accuracy mode for faster detection at the cost of accuracy. (defaults to `false`)
+
+  ## Return Values
+
+  * `{:ok, language}` - the detected language (e.g., `{:ok, :english}`)
+  * `{:ok, :no_match}` - no language matched the input
+  * `{:ok, [confidence_values]}` - list of `{language, confidence}` tuples when `compute_language_confidence_values: true`
+  * `{:error, :insufficient_languages}` - fewer than 2 languages provided with `:with_languages` or `:without_languages`
+  * `{:error, :out_of_range_minimum_relative_distance}` - `minimum_relative_distance` not in range 0.0..0.99
 
   ## Examples
 
@@ -74,7 +124,16 @@ defmodule Lingua do
       iex> Lingua.detect("what in the world is this", builder_option: :with_languages, languages: [:english, :russian, :hebrew], compute_language_confidence_values: true)
       {:ok, [{:english, 1.0}, {:hebrew, 0.0}, {:russian, 0.0}]}
 
+  Using ISO codes in the languages list:
+
+      iex> Lingua.detect("hello world", builder_option: :with_languages, languages: [:en, :de])
+      {:ok, :english}
+
+      iex> Lingua.detect("hello world", builder_option: :with_languages, languages: [:eng, :deu])
+      {:ok, :english}
+
   """
+  @spec detect(String.t(), [detect_option()]) :: detect_result()
   def detect(text, options \\ []) do
     builder_option = Keyword.get(options, :builder_option, @default_builder_option)
     languages = Keyword.get(options, :languages, @default_languages)
@@ -106,12 +165,22 @@ defmodule Lingua do
   end
 
   @doc """
-  Like `detect`, but returns the result value or raises an error.
+  Like `detect/2`, but returns the result value or raises an error.
+
+  ## Examples
+
+      iex> Lingua.detect!("this is definitely English")
+      :english
+
+      iex> Lingua.detect!("hello", builder_option: :with_languages, languages: [:english, :german])
+      :english
+
   """
+  @spec detect!(String.t(), [detect_option()]) :: language() | :no_match | [confidence_value()]
   def detect!(text, options \\ []) do
     case detect(text, options) do
       {:ok, value} -> value
-      {:error, error} -> raise error
+      {:error, error} -> raise ArgumentError, "detection failed: #{error}"
     end
   end
 
@@ -132,6 +201,7 @@ defmodule Lingua do
        :tagalog, :tamil, :telugu, :thai, :tsonga, :tswana, :turkish, :ukrainian,
        :urdu, :vietnamese, :welsh, :xhosa, :yoruba, :zulu]
   """
+  @spec all_languages() :: [language()]
   defdelegate all_languages(), to: Lingua.Nif
 
   @doc """
@@ -151,6 +221,7 @@ defmodule Lingua do
        :tagalog, :tamil, :telugu, :thai, :tsonga, :tswana, :turkish, :ukrainian,
        :urdu, :vietnamese, :welsh, :xhosa, :yoruba, :zulu]
   """
+  @spec all_spoken_languages() :: [language()]
   defdelegate all_spoken_languages(), to: Lingua.Nif
 
   @doc """
@@ -161,6 +232,7 @@ defmodule Lingua do
       iex> Lingua.all_languages_with_arabic_script()
       [:arabic, :persian, :urdu]
   """
+  @spec all_languages_with_arabic_script() :: [language()]
   defdelegate all_languages_with_arabic_script(), to: Lingua.Nif
 
   @doc """
@@ -171,6 +243,7 @@ defmodule Lingua do
       iex> Lingua.all_languages_with_cyrillic_script()
       [:belarusian, :bulgarian, :kazakh, :macedonian, :mongolian, :russian, :serbian, :ukrainian]
   """
+  @spec all_languages_with_cyrillic_script() :: [language()]
   defdelegate all_languages_with_cyrillic_script(), to: Lingua.Nif
 
   @doc """
@@ -181,6 +254,7 @@ defmodule Lingua do
       iex> Lingua.all_languages_with_devanagari_script()
       [:hindi, :marathi]
   """
+  @spec all_languages_with_devanagari_script() :: [language()]
   defdelegate all_languages_with_devanagari_script(), to: Lingua.Nif
 
   @doc """
@@ -197,6 +271,7 @@ defmodule Lingua do
        :swahili, :swedish, :tagalog, :tsonga, :tswana, :turkish, :vietnamese, :welsh,
        :xhosa, :yoruba, :zulu]
   """
+  @spec all_languages_with_latin_script() :: [language()]
   defdelegate all_languages_with_latin_script(), to: Lingua.Nif
 
   @doc """
@@ -209,6 +284,8 @@ defmodule Lingua do
       iex> Lingua.language_for_iso_code_639_1(:er)
       {:error, :unrecognized_iso_code}
   """
+  @spec language_for_iso_code_639_1(iso_639_1()) ::
+          {:ok, language()} | {:error, :unrecognized_iso_code}
   defdelegate language_for_iso_code_639_1(code), to: Lingua.Nif
 
   @doc """
@@ -221,6 +298,8 @@ defmodule Lingua do
       iex> Lingua.language_for_iso_code_639_3(:enr)
       {:error, :unrecognized_iso_code}
   """
+  @spec language_for_iso_code_639_3(iso_639_3()) ::
+          {:ok, language()} | {:error, :unrecognized_iso_code}
   defdelegate language_for_iso_code_639_3(code), to: Lingua.Nif
 
   @doc """
@@ -235,6 +314,8 @@ defmodule Lingua do
       iex> Lingua.language_for_iso_code(:mop)
       {:error, :unrecognized_iso_code}
   """
+  @spec language_for_iso_code(iso_639_1() | iso_639_3()) ::
+          {:ok, language()} | {:error, :unrecognized_iso_code}
   defdelegate language_for_iso_code(code), to: Lingua.Nif
 
   @doc """
@@ -247,6 +328,8 @@ defmodule Lingua do
       iex> Lingua.iso_code_639_1_for_language(:nope)
       {:error, :unrecognized_language}
   """
+  @spec iso_code_639_1_for_language(language()) ::
+          {:ok, iso_639_1()} | {:error, :unrecognized_language}
   defdelegate iso_code_639_1_for_language(language), to: Lingua.Nif
 
   @doc """
@@ -256,8 +339,10 @@ defmodule Lingua do
 
       iex> Lingua.iso_code_639_3_for_language(:english)
       {:ok, :eng}
-      iex> Lingua.iso_code_639_1_for_language(:nope)
+      iex> Lingua.iso_code_639_3_for_language(:nope)
       {:error, :unrecognized_language}
   """
+  @spec iso_code_639_3_for_language(language()) ::
+          {:ok, iso_639_3()} | {:error, :unrecognized_language}
   defdelegate iso_code_639_3_for_language(language), to: Lingua.Nif
 end

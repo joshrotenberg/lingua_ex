@@ -107,6 +107,47 @@ defmodule LinguaTest do
       assert Lingua.detect("וזה בעברית") == {:ok, :hebrew}
     end
 
+    test "detect/1 with empty string" do
+      assert Lingua.detect("") == {:ok, :no_match}
+    end
+
+    test "detect/1 with very short text" do
+      # Single characters may still be detected (lingua tries its best)
+      {:ok, result} = Lingua.detect("a")
+      assert is_atom(result)
+    end
+
+    test "detect!/1" do
+      assert Lingua.detect!("this is definitely English") == :english
+      assert Lingua.detect!("וזה בעברית") == :hebrew
+    end
+
+    test "detect!/2" do
+      assert Lingua.detect!("this is English",
+               builder_option: :with_languages,
+               languages: [:english, :german]
+             ) == :english
+    end
+
+    test "detect!/2 raises on error" do
+      assert_raise ArgumentError, ~r/insufficient_languages/, fn ->
+        Lingua.detect!("hello", builder_option: :with_languages, languages: [:english])
+      end
+    end
+
+    test "detect/2 with without_languages option" do
+      # Exclude English, should still detect something for English text
+      result =
+        Lingua.detect("this is definitely some text",
+          builder_option: :without_languages,
+          languages: [:german, :french]
+        )
+
+      assert {:ok, lang} = result
+      assert lang != :german
+      assert lang != :french
+    end
+
     test "detect/2" do
       assert Lingua.detect("państwowych",
                builder_option: :with_languages,
