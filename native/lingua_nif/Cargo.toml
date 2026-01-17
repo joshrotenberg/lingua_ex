@@ -1,5 +1,5 @@
 [package]
-authors = []
+authors = ["Josh Rotenberg <joshrotenberg@gmail.com>"]
 edition = "2024"
 name = "lingua_nif"
 version = "0.1.0"
