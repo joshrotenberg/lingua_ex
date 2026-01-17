@@ -1,6 +1,6 @@
 [package]
 authors = []
-edition = "2021"
+edition = "2024"
 name = "lingua_nif"
 version = "0.1.0"
 
@@ -10,5 +10,5 @@ name = "lingua_nif"
 path = "src/lib.rs"
 
 [dependencies]
-lingua = "1.5.0"
-rustler = "0.29.1"
+lingua = "1.7.2"
+rustler = "0.37.2"

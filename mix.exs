@@ -49,8 +49,8 @@ defmodule Lingua.MixProject do
 
   defp deps do
     [
-      {:rustler_precompiled, "~> 0.8.2"},
-      {:rustler, "~> 0.36.1", optional: true},
+      {:rustler_precompiled, "~> 0.8.4"},
+      {:rustler, "~> 0.37.1", optional: true},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.16", only: :test},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false}

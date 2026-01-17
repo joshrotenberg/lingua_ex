@@ -1,45 +1,20 @@
-#[macro_use]
-extern crate rustler;
-
 use builder::BuilderOption;
 use lingua::Language as linguaLanguage;
-use lingua::{LanguageDetectorBuilder};
+use lingua::LanguageDetectorBuilder;
 use rustler::{Encoder, Env, NifResult, Term};
 use std::collections::hash_set::HashSet;
 
+use crate::wrapper::LanguageType;
 use crate::wrapper::iso_639_1::IsoCode639_1;
 use crate::wrapper::iso_639_3::IsoCode639_3;
 use crate::wrapper::language::Language;
-use crate::wrapper::LanguageType;
 
 mod atoms;
 mod builder;
 mod wrapper;
 
-rustler::init! {
-    "Elixir.Lingua.Nif",
-    [
-        // language detection
-        // http://erlang.org/pipermail/erlang-questions/2018-October/096531.html
-        init,
-        run_detection,
+rustler::init!("Elixir.Lingua.Nif");
 
-        // language utility functions
-        all_languages,
-        all_spoken_languages,
-        all_languages_with_arabic_script,
-        all_languages_with_cyrillic_script,
-        all_languages_with_devanagari_script,
-        all_languages_with_latin_script,
-        language_for_iso_code,
-        language_for_iso_code_639_1,
-        language_for_iso_code_639_3,
-        iso_code_639_1_for_language,
-        iso_code_639_3_for_language,
-    ]
-}
-
-// language detection
 #[rustler::nif(schedule = "DirtyCpu")]
 fn init<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     LanguageDetectorBuilder::from_all_languages()
@@ -49,6 +24,7 @@ fn init<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     Ok((atoms::ok()).encode(env))
 }
 
+#[allow(clippy::too_many_arguments)]
 #[rustler::nif(schedule = "DirtyCpu")]
 fn run_detection<'a>(
     env: Env<'a>,
@@ -58,7 +34,7 @@ fn run_detection<'a>(
     compute_language_confidence_values: bool,
     minimum_relative_distance: f64,
     preload_language_models: bool,
-    low_accuracy_mode: bool
+    low_accuracy_mode: bool,
 ) -> NifResult<Term<'a>> {
     let languages = decode_languages(language_types);
 
@@ -66,7 +42,7 @@ fn run_detection<'a>(
         return Ok((atoms::error(), atoms::insufficient_languages()).encode(env));
     }
 
-    if minimum_relative_distance < 0.0 || minimum_relative_distance > 0.99 {
+    if !(0.0..=0.99).contains(&minimum_relative_distance) {
         return Ok((
             atoms::error(),
             atoms::out_of_range_minimum_relative_distance(),
@@ -105,12 +81,12 @@ fn run_detection<'a>(
     }
 
     let detector = builder.build();
-    if compute_language_confidence_values == true {
+    if compute_language_confidence_values {
         let confidence_values: Vec<(linguaLanguage, f64)> =
             detector.compute_language_confidence_values(text);
         let result: Vec<(Language, f64)> = confidence_values
             .into_iter()
-            .map(|(language, value)| (Language(language.clone()), value))
+            .map(|(language, value)| (Language(language), value))
             .collect();
 
         match result.len() {
@@ -131,14 +107,13 @@ fn decode_languages(language_types: Vec<LanguageType>) -> Vec<linguaLanguage> {
     language_types
         .into_iter()
         .map(|language_type| match language_type {
-            LanguageType::IsoCode639_1(l) => linguaLanguage::from_iso_code_639_1(&*l),
-            LanguageType::IsoCode639_3(l) => linguaLanguage::from_iso_code_639_3(&*l),
-            LanguageType::Language(l) => l.clone(),
+            LanguageType::IsoCode639_1(l) => linguaLanguage::from_iso_code_639_1(&l),
+            LanguageType::IsoCode639_3(l) => linguaLanguage::from_iso_code_639_3(&l),
+            LanguageType::Language(l) => *l,
         })
         .collect()
 }
 
-// language utility functions
 #[rustler::nif]
 fn all_languages<'a>(env: Env<'a>) -> NifResult<Term<'a>> {
     all(env, linguaLanguage::all)
@@ -174,12 +149,12 @@ fn language_for_iso_code<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResult<Term
     match iso_code.decode() {
         Ok(LanguageType::IsoCode639_1(code)) => Ok((
             atoms::ok(),
-            Language(linguaLanguage::from_iso_code_639_1(&*code)),
+            Language(linguaLanguage::from_iso_code_639_1(&code)),
         )
             .encode(env)),
         Ok(LanguageType::IsoCode639_3(code)) => Ok((
             atoms::ok(),
-            Language(linguaLanguage::from_iso_code_639_3(&*code)),
+            Language(linguaLanguage::from_iso_code_639_3(&code)),
         )
             .encode(env)),
         _ => Ok((atoms::error(), atoms::unrecognized_iso_code()).encode(env)),
@@ -191,7 +166,7 @@ fn language_for_iso_code_639_1<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResul
     match iso_code.decode() {
         Ok(LanguageType::IsoCode639_1(code)) => Ok((
             atoms::ok(),
-            Language(linguaLanguage::from_iso_code_639_1(&*code)),
+            Language(linguaLanguage::from_iso_code_639_1(&code)),
         )
             .encode(env)),
         _ => Ok((atoms::error(), atoms::unrecognized_iso_code()).encode(env)),
@@ -203,7 +178,7 @@ fn language_for_iso_code_639_3<'a>(env: Env<'a>, iso_code: Term<'a>) -> NifResul
     match iso_code.decode() {
         Ok(LanguageType::IsoCode639_3(code)) => Ok((
             atoms::ok(),
-            Language(linguaLanguage::from_iso_code_639_3(&*code)),
+            Language(linguaLanguage::from_iso_code_639_3(&code)),
         )
             .encode(env)),
         _ => Ok((atoms::error(), atoms::unrecognized_iso_code()).encode(env)),
@@ -233,10 +208,7 @@ fn iso_code_639_3_for_language<'a>(env: Env<'a>, language: Term<'a>) -> NifResul
 }
 
 fn all<'a>(env: Env<'a>, f: fn() -> HashSet<linguaLanguage>) -> NifResult<Term<'a>> {
-    let mut languages = f()
-        .into_iter()
-        .map(|language| Language(language))
-        .collect::<Vec<Language>>();
+    let mut languages = f().into_iter().map(Language).collect::<Vec<Language>>();
     languages.sort_by(|a, b| a.cmp(b));
     Ok((languages).encode(env))
 }

@@ -1,8 +1,6 @@
-atoms! {
+rustler::atoms! {
     ok,
     error,
-    //atom __true__ = "true";
-    //atom __false__ = "false";
 
     // languages
     afrikaans,
