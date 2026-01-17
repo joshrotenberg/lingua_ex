@@ -8,7 +8,18 @@ defmodule Lingua.Nif do
     crate: "lingua_nif",
     base_url: "https://github.com/joshrotenberg/lingua_ex/releases/download/v#{version}",
     force_build: System.get_env("LINGUA_BUILD") in ["1", "true"],
-    version: version
+    version: version,
+    targets: [
+      "aarch64-apple-darwin",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-linux-musl",
+      "arm-unknown-linux-gnueabihf",
+      "riscv64gc-unknown-linux-gnu",
+      "x86_64-pc-windows-gnu",
+      "x86_64-pc-windows-msvc",
+      "x86_64-unknown-linux-gnu",
+      "x86_64-unknown-linux-musl"
+    ]
 
   def init, do: error()
 
