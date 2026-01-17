@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.2...v0.3.3) (2026-01-17)
+
+
+### Bug Fixes
+
+* generate checksums before hex publish ([5fdb843](https://github.com/joshrotenberg/lingua_ex/commit/5fdb8435137ca920e8f671cff1408f4691e1e6c6))
+
 ## [0.3.2](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.1...v0.3.2) (2026-01-17)
 
 
