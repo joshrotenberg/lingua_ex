@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.0...v0.3.1) (2026-01-17)
+
+
+### Bug Fixes
+
+* chain precompile and hex-publish workflows from release-please ([2e1f7d2](https://github.com/joshrotenberg/lingua_ex/commit/2e1f7d214f6463ea5f8e045630ba8c923ee22085))
+
 ## [0.3.0](https://github.com/joshrotenberg/lingua_ex/compare/v0.2.0...v0.3.0) (2026-01-17)
 
 
