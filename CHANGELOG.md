@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.6](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.5...v0.3.6) (2026-01-17)
+
+
+### Bug Fixes
+
+* specify supported NIF targets ([adc6675](https://github.com/joshrotenberg/lingua_ex/commit/adc6675e5c0f57f0cde30826ddc02c3c85a0ba5a))
+
 ## [0.3.5](https://github.com/joshrotenberg/lingua_ex/compare/v0.3.4...v0.3.5) (2026-01-17)
 
 
