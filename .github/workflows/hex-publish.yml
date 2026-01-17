@@ -28,6 +28,9 @@ jobs:
           mix local.hex --force
           mix deps.get
 
+      - name: Generate checksums
+        run: mix rustler_precompiled.download Lingua.Nif --all --print
+
       - name: Publish to Hex
         run: mix hex.publish --yes
         env:
